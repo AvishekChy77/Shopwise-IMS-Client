@@ -1,0 +1,34 @@
+[
+  {
+    "productName": "Dining table",
+    "img": "https://i.ibb.co/Sw0gs3d/dining.png",
+    "quantity": 4,
+    "location": "Rajshahi",
+    "productionCost": 45000,
+    "profit": 0.35,
+    "description": "Falkner-118 and Barberry-118 (4 Chair and 1 Table with NTM Glass)",
+    "saleCount": 0,
+    "listPrice": 64125,
+    "sellingPrice": 64125,
+    "addingDate": "2023-11-28",
+    "shopId": "65636ea793ace975dccbcdaa",
+    "shopName": "Hatil",
+    "email": "warner@gmail.com"
+  },
+  {
+    "productName": "Wardrobe",
+    "img": "https://i.ibb.co/XZt4bsm/wardrobe.jpg",
+    "quantity": 3,
+    "location": "Dhaka",
+    "productionCost": 30000,
+    "profit": 0.3,
+    "description": "Lacquer and Lamination Board, 2 Door, 7 Feet Height",
+    "saleCount": 0,
+    "listPrice": 41250,
+    "sellingPrice": 41250,
+    "addingDate": "2023-11-28",
+    "shopId": "65636ea793ace975dccbcdaa",
+    "shopName": "Hatil",
+    "email": "warner@gmail.com"
+  }
+]
