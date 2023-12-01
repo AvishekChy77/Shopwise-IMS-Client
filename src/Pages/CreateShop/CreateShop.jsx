@@ -2,6 +2,7 @@ import axios from "axios";
 import { useFormik } from "formik";
 import Lottie from "lottie-react";
 import { useContext } from "react";
+import { Helmet } from "react-helmet-async";
 import { BiShoppingBag } from "react-icons/bi";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -97,143 +98,160 @@ const CreateShop = () => {
     },
   });
   return (
-    <div className="my-14 text-center">
-      {userDB?.role === "manager" && (
-        <p className=" text-xl font-medium text-sky-700 mb-5">
-          You already have a shop!{" "}
-          <Link
-            className=" cursor-pointer text-xl font-semibold text-cyan-600"
-            to="/dashboard/productManagement"
-          >
-            Go to your Shop
-          </Link>
-        </p>
-      )}
-      <div className=" flex items-center flex-col lg:flex-row lg:gap-10">
-        <h2 className=" text-2xl text-black md:text-3xl space-y-3 xl:text-4xl font-semibold">
-          <p className=" pl-5  text-left">Your Store, Your Way</p>{" "}
-          <p className="pr-5 text-right">Begin Shop Setup</p>
-          <Lottie className="px-2" animationData={shop} autoPlay={true} />
-        </h2>
-        <div className="p-1 sm:p-4 mb-10 rounded-md  w-[350px] sm:w-[450px] md:w-[550px] lg:w-[600px]  mx-auto bg-teal-900 pb-10 lg:px-10">
-          <form onSubmit={formik.handleSubmit}>
-            <div className=" flex flex-col md:flex-row items-center justify-between gap-1">
-              <div className="form-control w-full md:w-2/5">
-                <label className="label text-black" htmlFor="shopName">
-                  Shop name*
-                </label>
-                <input
-                  id="shopName"
-                  name="shopName"
-                  type="text"
-                  required
-                  placeholder="shop name"
-                  onChange={formik.handleChange}
-                  value={formik.values.shopName}
-                  className="input bg-white input-bordered"
-                />
+    <>
+      <Helmet>
+        <title>ShopWise | CreateShop</title>
+      </Helmet>
+      <div className="my-14 text-center">
+        {userDB?.role === "manager" && (
+          <p className=" text-xl font-medium text-sky-700 mb-5">
+            You already have a shop!{" "}
+            <Link
+              className=" cursor-pointer text-xl font-semibold text-cyan-600"
+              to="/dashboard/productManagement"
+            >
+              Go to your Shop
+            </Link>
+          </p>
+        )}
+        {userDB?.role === "admin" && (
+          <p className=" text-xl font-medium text-sky-700 mb-5">
+            <Link
+              className=" cursor-pointer text-xl font-semibold text-cyan-600"
+              to="/dashboard/manageShops"
+            >
+              Go to Dashboard
+            </Link>
+          </p>
+        )}
+        <div className=" flex items-center flex-col lg:flex-row lg:gap-10">
+          <h2 className=" text-2xl text-black md:text-3xl space-y-3 xl:text-4xl font-semibold">
+            <p className=" pl-5  text-left">Your Store, Your Way</p>{" "}
+            <p className="pr-5 text-right">Begin Shop Setup</p>
+            <Lottie className="px-2" animationData={shop} autoPlay={true} />
+          </h2>
+          <div className="p-1 sm:p-4 mb-10 rounded-md  w-[350px] sm:w-[450px] md:w-[550px] lg:w-[600px]  mx-auto bg-teal-900 pb-10 lg:px-10">
+            <form onSubmit={formik.handleSubmit}>
+              <div className=" flex flex-col md:flex-row items-center justify-between gap-1">
+                <div className="form-control w-full md:w-2/5">
+                  <label className="label text-black" htmlFor="shopName">
+                    Shop name*
+                  </label>
+                  <input
+                    id="shopName"
+                    name="shopName"
+                    type="text"
+                    required
+                    placeholder="shop name"
+                    onChange={formik.handleChange}
+                    value={formik.values.shopName}
+                    className="input bg-white input-bordered"
+                  />
+                </div>
+                <div className="form-control w-full md:w-3/5">
+                  <label className="label text-black" htmlFor="shoplogo">
+                    Shop logo*
+                  </label>
+                  <input
+                    type="file"
+                    id="file"
+                    name="file"
+                    onChange={(event) => {
+                      formik.setFieldValue("file", event.currentTarget.files);
+                    }}
+                    className="file-input bg-white file-input-bordered w-full max-w-xs"
+                  />
+                </div>
               </div>
-              <div className="form-control w-full md:w-3/5">
-                <label className="label text-black" htmlFor="shoplogo">
-                  Shop logo*
-                </label>
-                <input
-                  type="file"
-                  id="file"
-                  name="file"
-                  onChange={(event) => {
-                    formik.setFieldValue("file", event.currentTarget.files);
-                  }}
-                  className="file-input bg-white file-input-bordered w-full max-w-xs"
-                />
+              <div className=" flex flex-col md:flex-row items-center justify-between gap-1">
+                <div className="form-control w-full md:w-1/2">
+                  <label className="label" htmlFor="shopDescription">
+                    Shop Description*
+                  </label>
+                  <select
+                    className="input bg-white input-bordered "
+                    id="shopDescription"
+                    name="shopDescription"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.shopDescription}
+                  >
+                    <option disabled value="" label="Category" />
+                    <option value="Apparel" label="Apparel" />
+                    <option value="Bike" label="Bike" />
+                    <option value="Electronics" label="Electronics" />
+                    <option value="Home Decor" label="Home Decor" />
+                    <option value="Gift Store" label="Gift Store" />
+                    <option value="Health & Beauty" label="Health & Beauty" />
+                  </select>
+                  {formik.touched.category && formik.errors.category ? (
+                    <div>{formik.errors.category}</div>
+                  ) : null}
+                </div>
+                <div className="form-control w-full md:w-1/2">
+                  <label className="label" htmlFor="location">
+                    Location
+                  </label>
+                  <input
+                    id="location"
+                    name="location"
+                    type="text"
+                    required
+                    placeholder="location"
+                    onChange={formik.handleChange}
+                    value={formik.values.location}
+                    className="input bg-white input-bordered"
+                  />
+                </div>
               </div>
-            </div>
-            <div className=" flex flex-col md:flex-row items-center justify-between gap-1">
-              <div className="form-control w-full md:w-1/2">
-                <label className="label" htmlFor="shopDescription">
-                  Shop Description*
-                </label>
-                <select
-                  className="input bg-white input-bordered "
-                  id="shopDescription"
-                  name="shopDescription"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.shopDescription}
+              <div className=" flex flex-col md:flex-row items-center justify-between gap-1">
+                <div className="form-control w-full md:w-1/2">
+                  <label className="label text-black" htmlFor="ownerName">
+                    Owner name
+                  </label>
+                  <input
+                    id="ownerName"
+                    name="ownerName"
+                    type="text"
+                    required
+                    readOnly
+                    onChange={formik.handleChange}
+                    value={user.displayName}
+                    className="input bg-white input-bordered"
+                  />
+                </div>
+                <div className="form-control w-full md:w-1/2">
+                  <label className="label text-black" htmlFor="email">
+                    Email
+                  </label>
+                  <input
+                    id="email"
+                    name="email"
+                    type="text"
+                    required
+                    readOnly
+                    onChange={formik.handleChange}
+                    value={user.email}
+                    className="input bg-white input-bordered"
+                  />
+                </div>
+              </div>
+              <div className="my-5 text-center">
+                <button
+                  className="btn  btn-wide text-black hover:text-white  hover:bg-gradient-to-r from-stone-700 to-stone-900  btn-outline "
+                  type="submit"
+                  disabled={
+                    userDB?.role === "manager" || userDB?.role === "admin"
+                  }
                 >
-                  <option disabled value="" label="Category" />
-                  <option value="Apparel" label="Apparel" />
-                  <option value="Bike" label="Bike" />
-                  <option value="Electronics" label="Electronics" />
-                  <option value="Home Decor" label="Home Decor" />
-                  <option value="Gift Store" label="Gift Store" />
-                  <option value="Health & Beauty" label="Health & Beauty" />
-                </select>
-                {formik.touched.category && formik.errors.category ? (
-                  <div>{formik.errors.category}</div>
-                ) : null}
+                  Here we go <BiShoppingBag size={26} />
+                </button>
               </div>
-              <div className="form-control w-full md:w-1/2">
-                <label className="label" htmlFor="location">
-                  Location
-                </label>
-                <input
-                  id="location"
-                  name="location"
-                  type="text"
-                  required
-                  placeholder="location"
-                  onChange={formik.handleChange}
-                  value={formik.values.location}
-                  className="input bg-white input-bordered"
-                />
-              </div>
-            </div>
-            <div className=" flex flex-col md:flex-row items-center justify-between gap-1">
-              <div className="form-control w-full md:w-1/2">
-                <label className="label text-black" htmlFor="ownerName">
-                  Owner name
-                </label>
-                <input
-                  id="ownerName"
-                  name="ownerName"
-                  type="text"
-                  required
-                  readOnly
-                  onChange={formik.handleChange}
-                  value={user.displayName}
-                  className="input bg-white input-bordered"
-                />
-              </div>
-              <div className="form-control w-full md:w-1/2">
-                <label className="label text-black" htmlFor="email">
-                  Email
-                </label>
-                <input
-                  id="email"
-                  name="email"
-                  type="text"
-                  required
-                  readOnly
-                  onChange={formik.handleChange}
-                  value={user.email}
-                  className="input bg-white input-bordered"
-                />
-              </div>
-            </div>
-            <div className="my-5 text-center">
-              <button
-                className="btn  btn-wide text-black hover:text-white  hover:bg-gradient-to-r from-stone-700 to-stone-900  btn-outline "
-                type="submit"
-                disabled={userDB?.role === "manager"}
-              >
-                Here we go <BiShoppingBag size={26} />
-              </button>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

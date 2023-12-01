@@ -9,7 +9,12 @@ const HelpLine = () => {
         Helping businesses do more
       </h2>
       <div className="grid gap-5 grid-cols-1 md:grid-cols-2">
-        <div className=" text-left max-w-lg bg-[#265073] text-white p-10 pr-5 pb-16 rounded-md">
+        <div
+          data-aos="flip-left"
+          data-aos-easing="linear"
+          data-aos-duration="2000"
+          className=" text-left max-w-lg bg-[#265073] text-white p-10 pr-5 pb-16 rounded-md"
+        >
           <FaHeadset size={36} />
           <h2 className=" text-2xl mt-4 font-bold text-[#9ADE7B]">
             Talk to sales
@@ -22,7 +27,12 @@ const HelpLine = () => {
           </p>
           <p>Mon-Fri, 5 AM to 6 PM GMT</p>
         </div>
-        <div className=" text-left max-w-lg bg-[#265073] text-white p-10 pr-5 pb-16 rounded-md">
+        <div
+          data-aos="flip-right"
+          data-aos-easing="linear"
+          data-aos-duration="2000"
+          className=" text-left max-w-lg bg-[#265073] text-white p-10 pr-5 pb-16 rounded-md"
+        >
           <LuMonitor size={36} />
           <h2 className=" text-2xl mt-4 font-bold text-[#9ADE7B]">
             Visit our support hub

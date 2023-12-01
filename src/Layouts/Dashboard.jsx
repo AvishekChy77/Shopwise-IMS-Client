@@ -1,13 +1,27 @@
+import { useContext } from "react";
 import { BsFillCollectionFill } from "react-icons/bs";
 import { FaBars } from "react-icons/fa";
 import { FaSitemap } from "react-icons/fa6";
+import { GrUserManager } from "react-icons/gr";
+import { HiMiniWallet } from "react-icons/hi2";
 import { IoCartOutline } from "react-icons/io5";
 import { MdLogout, MdOutlineAddchart, MdTipsAndUpdates } from "react-icons/md";
 import { Link, Outlet } from "react-router-dom";
 import MenuItem from "../Components/MenuItem/MenuItem";
+import useAdmin from "../Hooks/useAdmin";
+import useManager from "../Hooks/useManager";
 import Footer from "../Pages/Shared/Footer/Footer";
+import { AuthContext } from "../Provider/AuthProvider";
 
 const Dashboard = () => {
+  const { logOut } = useContext(AuthContext);
+  const { isManager } = useManager();
+  const { isAdmin } = useAdmin();
+  const handleSignOut = () => {
+    logOut()
+      .then()
+      .catch((error) => console.log(error.message));
+  };
   return (
     <div className="drawer lg:drawer-open">
       <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
@@ -46,32 +60,61 @@ const Dashboard = () => {
             </Link>
           </div>
 
-          <MenuItem
-            icon={FaSitemap}
-            label="Product Management"
-            address="/dashboard/productManagement"
-          ></MenuItem>
-          <MenuItem
-            icon={MdOutlineAddchart}
-            label="Add Product"
-            address="/dashboard/addProduct"
-          ></MenuItem>
-          <MenuItem
-            icon={MdTipsAndUpdates}
-            label="Subscription"
-            address="/dashboard/subscription"
-          ></MenuItem>
-          <MenuItem
-            icon={BsFillCollectionFill}
-            label="Sales Collection"
-            address="/dashboard/salesCollection"
-          ></MenuItem>
-          <MenuItem
-            icon={IoCartOutline}
-            label="Shop Cart"
-            address="/dashboard/shopCart"
-          ></MenuItem>
-          <MenuItem icon={MdLogout} label="Log Out" address="/login"></MenuItem>
+          {isManager && (
+            <>
+              <MenuItem
+                icon={FaSitemap}
+                label="Product Management"
+                address="/dashboard/productManagement"
+              ></MenuItem>
+              <MenuItem
+                icon={MdOutlineAddchart}
+                label="Add Product"
+                address="/dashboard/addProduct"
+              ></MenuItem>
+              <MenuItem
+                icon={MdTipsAndUpdates}
+                label="Subscription"
+                address="/dashboard/subscription"
+              ></MenuItem>
+              <MenuItem
+                icon={BsFillCollectionFill}
+                label="Sales Collection"
+                address="/dashboard/salesCollection"
+              ></MenuItem>
+              <MenuItem
+                icon={IoCartOutline}
+                label="Shop Cart"
+                address="/dashboard/shopCart"
+              ></MenuItem>
+              <MenuItem
+                icon={HiMiniWallet}
+                label="Sales Summary"
+                address="/dashboard/salesSummary"
+              ></MenuItem>
+            </>
+          )}
+          {isAdmin && (
+            <>
+              <MenuItem
+                icon={GrUserManager}
+                label="Manage Shops"
+                address="/dashboard/manageShops"
+              ></MenuItem>
+              <MenuItem
+                icon={HiMiniWallet}
+                label="Sales Summary"
+                address="/dashboard/adminSalesSummary"
+              ></MenuItem>
+            </>
+          )}
+          <button onClick={handleSignOut}>
+            <MenuItem
+              icon={MdLogout}
+              label="Log Out"
+              address="/login"
+            ></MenuItem>
+          </button>
         </ul>
       </div>
     </div>

@@ -9,6 +9,7 @@ import {
 } from "react-simple-captcha";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+// import useAxiosPublic from "../../Hooks/useAxiosPublic";
 import { AuthContext } from "../../Provider/AuthProvider";
 import animationData from "../../assets/login.json";
 import SocialLogin from "./SocialLogin";
@@ -20,6 +21,7 @@ const Login = () => {
   const { signIn } = useContext(AuthContext);
   const location = useLocation();
   const Navigate = useNavigate();
+  // const axiosPublic = useAxiosPublic();
 
   useEffect(() => {
     loadCaptchaEnginge(6);
@@ -47,6 +49,42 @@ const Login = () => {
         setErrorMsg("Invalid email or password");
       });
   };
+
+  // const handleLogin = async (e) => {
+  //   e.preventDefault();
+  //   const form = new FormData(e.currentTarget);
+  //   console.log(form);
+  //   const email = form.get("email");
+  //   const password = form.get("password");
+  //   console.log(email, password);
+  //   setErrorMsg("");
+
+  //   try {
+  //     const res = await signIn(email, password);
+  //     const user = res.user;
+  //     console.log(user);
+
+  //     // Fetch user role data
+  //     const roleRes = await axiosPublic.get(`/users/${user.email}`);
+  //     const userRole = roleRes.data.role;
+  //     console.log(userRole);
+
+  //     e.target.reset();
+  //     toast("Successfully logged in!");
+
+  //     // Conditionally navigate based on user role
+  //     if (userRole === "admin") {
+  //       Navigate("/dashboard/manageShops");
+  //     } else if (userRole === "manager") {
+  //       Navigate("/dashboard/productManagement");
+  //     } else {
+  //       Navigate("/createStore");
+  //     }
+  //   } catch (error) {
+  //     console.log(error.message);
+  //     setErrorMsg("Invalid email or password");
+  //   }
+  // };
 
   const handleValueCap = (e) => {
     const user_captcha_value = e.target.value;

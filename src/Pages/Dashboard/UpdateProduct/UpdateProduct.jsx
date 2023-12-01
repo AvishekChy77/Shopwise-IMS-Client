@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useFormik } from "formik";
+import { Helmet } from "react-helmet-async";
 import { BiShoppingBag } from "react-icons/bi";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -53,7 +54,7 @@ const UpdateProduct = () => {
         const productData = {
           productName: values.productName,
           img: res.data.data.display_url,
-          quantity: values.quantity,
+          quantity: parseInt(values.quantity),
           location: values.location,
           productionCost: productionCost,
           profit: profit,
@@ -95,151 +96,156 @@ const UpdateProduct = () => {
     },
   });
   return (
-    <div className="my-5 flex flex-col items-center">
-      <div className="mb-10">
-        <img className="w-[80px] md:w-[100px]" src={product?.img} alt="" />
-      </div>
-      <div className="p-2 sm:p-4 mb-10 rounded-md  w-[365px] sm:w-[470px] md:w-[650px] xl:w-[750px]   bg-teal-900  lg:px-10">
-        <form onSubmit={formik.handleSubmit}>
-          <div className=" flex flex-col md:flex-row items-center justify-between gap-1">
-            <div className="form-control w-full md:w-1/2">
-              <label className="label text-black" htmlFor="productName">
-                Product name*
-              </label>
-              <input
-                id="productName"
-                name="productName"
-                type="text"
-                required
-                placeholder="product name"
-                onChange={formik.handleChange}
-                value={formik.values.productName}
-                className="input bg-white input-bordered"
-              />
+    <>
+      <Helmet>
+        <title>ShopWise | Update-product</title>
+      </Helmet>
+      <div className="my-5 flex flex-col items-center">
+        <div className="mb-10">
+          <img className="w-[80px] md:w-[100px]" src={product?.img} alt="" />
+        </div>
+        <div className="p-2 sm:p-4 mb-10 rounded-md  w-[365px] sm:w-[470px] md:w-[650px] xl:w-[750px]   bg-teal-900  lg:px-10">
+          <form onSubmit={formik.handleSubmit}>
+            <div className=" flex flex-col md:flex-row items-center justify-between gap-1">
+              <div className="form-control w-full md:w-1/2">
+                <label className="label text-black" htmlFor="productName">
+                  Product name*
+                </label>
+                <input
+                  id="productName"
+                  name="productName"
+                  type="text"
+                  required
+                  placeholder="product name"
+                  onChange={formik.handleChange}
+                  value={formik.values.productName}
+                  className="input bg-white input-bordered"
+                />
+              </div>
+              <div className="form-control w-full md:w-1/2">
+                <label className="label text-black" htmlFor="shoplogo">
+                  Image*
+                </label>
+                <input
+                  type="file"
+                  id="file"
+                  name="file"
+                  onChange={(event) => {
+                    formik.setFieldValue("file", event.currentTarget.files);
+                  }}
+                  className="file-input bg-white file-input-bordered w-full max-w-xs"
+                />
+              </div>
             </div>
-            <div className="form-control w-full md:w-1/2">
-              <label className="label text-black" htmlFor="shoplogo">
-                Image*
-              </label>
-              <input
-                type="file"
-                id="file"
-                name="file"
-                onChange={(event) => {
-                  formik.setFieldValue("file", event.currentTarget.files);
-                }}
-                className="file-input bg-white file-input-bordered w-full max-w-xs"
-              />
+            <div className=" flex flex-col md:flex-row items-center justify-between gap-1">
+              <div className="form-control w-full md:w-1/2">
+                <label className="label" htmlFor="productDescription">
+                  Product Description*
+                </label>
+                <input
+                  id="description"
+                  name="description"
+                  type="text"
+                  required
+                  placeholder="description"
+                  onChange={formik.handleChange}
+                  value={formik.values.description}
+                  className="input bg-white input-bordered"
+                />
+              </div>
+              <div className="form-control w-full md:w-1/2">
+                <label className="label" htmlFor="location">
+                  Location*
+                </label>
+                <input
+                  id="location"
+                  name="location"
+                  type="text"
+                  required
+                  placeholder="location"
+                  onChange={formik.handleChange}
+                  value={formik.values.location}
+                  className="input bg-white input-bordered"
+                />
+              </div>
             </div>
-          </div>
-          <div className=" flex flex-col md:flex-row items-center justify-between gap-1">
-            <div className="form-control w-full md:w-1/2">
-              <label className="label" htmlFor="productDescription">
-                Product Description*
-              </label>
-              <input
-                id="description"
-                name="description"
-                type="text"
-                required
-                placeholder="description"
-                onChange={formik.handleChange}
-                value={formik.values.description}
-                className="input bg-white input-bordered"
-              />
+            <div className=" flex flex-col md:flex-row items-center justify-between gap-1">
+              <div className="form-control w-full md:w-1/2">
+                <label className="label" htmlFor="quantity">
+                  Quantity*
+                </label>
+                <input
+                  id="quantity"
+                  name="quantity"
+                  type="text"
+                  required
+                  placeholder="quantity"
+                  onChange={formik.handleChange}
+                  value={formik.values.quantity}
+                  className="input bg-white input-bordered"
+                />
+              </div>
+              <div className="form-control w-full md:w-1/2">
+                <label className="label" htmlFor="discount">
+                  Discount*
+                </label>
+                <input
+                  id="discount"
+                  name="discount"
+                  type="text"
+                  required
+                  placeholder="in percentage %"
+                  onChange={formik.handleChange}
+                  value={formik.values.discount}
+                  className="input bg-white input-bordered"
+                />
+              </div>
             </div>
-            <div className="form-control w-full md:w-1/2">
-              <label className="label" htmlFor="location">
-                Location*
-              </label>
-              <input
-                id="location"
-                name="location"
-                type="text"
-                required
-                placeholder="location"
-                onChange={formik.handleChange}
-                value={formik.values.location}
-                className="input bg-white input-bordered"
-              />
+            <div className=" flex flex-col md:flex-row items-center justify-between gap-1">
+              <div className="form-control w-full md:w-1/2">
+                <label className="label" htmlFor="productionCost">
+                  Production Cost*
+                </label>
+                <input
+                  id="productionCost"
+                  name="productionCost"
+                  type="text"
+                  required
+                  placeholder="productionCost"
+                  onChange={formik.handleChange}
+                  value={formik.values.productionCost}
+                  className="input bg-white input-bordered"
+                />
+              </div>
+              <div className="form-control w-full md:w-1/2">
+                <label className="label" htmlFor="profit">
+                  Profit Margin*
+                </label>
+                <input
+                  id="profit"
+                  name="profit"
+                  type="text"
+                  required
+                  placeholder="in percentage %"
+                  onChange={formik.handleChange}
+                  value={formik.values.profit}
+                  className="input bg-white input-bordered"
+                />
+              </div>
             </div>
-          </div>
-          <div className=" flex flex-col md:flex-row items-center justify-between gap-1">
-            <div className="form-control w-full md:w-1/2">
-              <label className="label" htmlFor="quantity">
-                Quantity*
-              </label>
-              <input
-                id="quantity"
-                name="quantity"
-                type="text"
-                required
-                placeholder="quantity"
-                onChange={formik.handleChange}
-                value={formik.values.quantity}
-                className="input bg-white input-bordered"
-              />
-            </div>
-            <div className="form-control w-full md:w-1/2">
-              <label className="label" htmlFor="discount">
-                Discount*
-              </label>
-              <input
-                id="discount"
-                name="discount"
-                type="text"
-                required
-                placeholder="in percentage %"
-                onChange={formik.handleChange}
-                value={formik.values.discount}
-                className="input bg-white input-bordered"
-              />
-            </div>
-          </div>
-          <div className=" flex flex-col md:flex-row items-center justify-between gap-1">
-            <div className="form-control w-full md:w-1/2">
-              <label className="label" htmlFor="productionCost">
-                Production Cost*
-              </label>
-              <input
-                id="productionCost"
-                name="productionCost"
-                type="text"
-                required
-                placeholder="productionCost"
-                onChange={formik.handleChange}
-                value={formik.values.productionCost}
-                className="input bg-white input-bordered"
-              />
-            </div>
-            <div className="form-control w-full md:w-1/2">
-              <label className="label" htmlFor="profit">
-                Profit Margin*
-              </label>
-              <input
-                id="profit"
-                name="profit"
-                type="text"
-                required
-                placeholder="in percentage %"
-                onChange={formik.handleChange}
-                value={formik.values.profit}
-                className="input bg-white input-bordered"
-              />
-            </div>
-          </div>
 
-          <div className="my-5 text-center">
-            <button
-              className="btn  btn-wide text-black hover:text-white  hover:bg-gradient-to-r from-stone-700 to-stone-900  btn-outline "
-              type="submit"
-            >
-              Update Product <BiShoppingBag size={26} />
-            </button>
-          </div>
-        </form>
+            <div className="my-5 text-center">
+              <button
+                className="btn  btn-wide text-black hover:text-white  hover:bg-gradient-to-r from-stone-700 to-stone-900  btn-outline "
+                type="submit"
+              >
+                Update Product <BiShoppingBag size={26} />
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

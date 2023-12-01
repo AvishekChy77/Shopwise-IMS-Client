@@ -33,7 +33,7 @@ const Navbar = () => {
         </NavLink>
       )}
       {userDB?.role === "admin" && (
-        <NavLink className="nav" to="/dashboard/adminHome">
+        <NavLink className="nav" to="/dashboard/manageShops">
           DashBoard
         </NavLink>
       )}
