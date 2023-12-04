@@ -17,8 +17,8 @@ const Services = () => {
         </p>
       </div>
       <div className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-        <div className=" flex flex-col items-start max-w-xs">
-          <GoGraph size={40} />
+        <div className=" flex flex-col items-start max-w-xs group">
+          <GoGraph className=" group-hover:text-teal-500" size={40} />
           <h2 className=" text-lg font-bold mb-1">Increase sales</h2>
           <p className=" grow text-justify">
             Expand your business online with our multi-channel inventory
@@ -26,8 +26,8 @@ const Services = () => {
             Shopify account, and start selling your merchandise.
           </p>
         </div>
-        <div className=" flex flex-col items-start max-w-xs">
-          <SiBookstack size={40} />
+        <div className=" flex flex-col items-start max-w-xs group">
+          <SiBookstack className=" group-hover:text-teal-500" size={40} />
           <h2 className=" text-lg font-bold mb-1">Manage orders</h2>
           <p className=" grow text-justify">
             Manage your offline and online orders with our efficient order
@@ -36,8 +36,8 @@ const Services = () => {
             application.
           </p>
         </div>
-        <div className=" flex flex-col items-start max-w-xs">
-          <FaShippingFast size={40} />
+        <div className=" flex flex-col items-start max-w-xs group">
+          <FaShippingFast className=" group-hover:text-teal-500" size={40} />
           <h2 className=" text-lg font-bold mb-1">
             Multiple shipping integrations
           </h2>
@@ -48,8 +48,8 @@ const Services = () => {
             system.
           </p>
         </div>
-        <div className=" flex flex-col items-start max-w-xs">
-          <SlLocationPin size={40} />
+        <div className=" flex flex-col items-start max-w-xs group">
+          <SlLocationPin className=" group-hover:text-teal-500" size={40} />
           <h2 className=" text-lg font-bold mb-1">End-to-end tracking</h2>
           <p className=" grow text-justify">
             Track every item or batch in your inventory with serial number and
@@ -58,8 +58,11 @@ const Services = () => {
             of each batch.
           </p>
         </div>
-        <div className=" flex flex-col items-start max-w-xs">
-          <GiGearStickPattern size={40} />
+        <div className=" flex flex-col items-start max-w-xs group">
+          <GiGearStickPattern
+            className=" group-hover:text-teal-500"
+            size={40}
+          />
           <h2 className=" text-lg font-bold mb-1">
             Accounting and CRM integrations
           </h2>
@@ -69,8 +72,8 @@ const Services = () => {
             without breaking a sweat.
           </p>
         </div>
-        <div className=" flex flex-col items-start max-w-xs">
-          <PiWarehouse size={40} />
+        <div className=" flex flex-col items-start max-w-xs group">
+          <PiWarehouse className=" group-hover:text-teal-500" size={40} />
           <h2 className=" text-lg font-bold mb-1">Warehouse Management</h2>
           <p className=" grow text-justify">
             Check stock level, manage inter-warehouse transfer, and generate
