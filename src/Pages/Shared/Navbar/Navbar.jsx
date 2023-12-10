@@ -45,7 +45,7 @@ const Navbar = () => {
   return (
     <div className="navbar  pt-1">
       <div className="w-2/3 md:w-1/2 navbar-start">
-        <div className="dropdown text-white ">
+        <div className="dropdown">
           <label
             tabIndex={0}
             className="btn px-2 btn-ghost text-black lg:hidden"
@@ -67,7 +67,7 @@ const Navbar = () => {
           </label>
           <ul
             tabIndex={0}
-            className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 Navbar rounded-box w-52"
+            className="menu menu-sm dropdown-content text-white bg-black mt-3 z-[1] p-2 shadow Navbar rounded-box w-52"
           >
             {Navbar}
           </ul>
@@ -113,7 +113,9 @@ const Navbar = () => {
           </div>
         ) : (
           <NavLink to="/login">
-            <button className="btn btn-sm btn-outline">LogIn</button>
+            <button className="btn btn-sm btn-outline text-black hover:text-white hover:bg-black">
+              LogIn
+            </button>
           </NavLink>
         )}
       </div>
