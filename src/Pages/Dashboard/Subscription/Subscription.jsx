@@ -62,7 +62,7 @@ const Subscription = () => {
             </div>
           </div>
         </div>
-        <div className=" bg-slate-400 p-5 lg:p-10">
+        <div className=" bg-slate-100 mt-10 border rounded-lg p-5 lg:p-10">
           <Elements stripe={stripePromise}>
             <CheckOut bill={bill} limit={limit} />
           </Elements>

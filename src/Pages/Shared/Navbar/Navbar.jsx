@@ -32,6 +32,11 @@ const Navbar = () => {
           DashBoard
         </NavLink>
       )}
+      {userDB?.role === "manager" && (
+        <NavLink className="nav" to="/feedback">
+          Feedback
+        </NavLink>
+      )}
       {userDB?.role === "admin" && (
         <NavLink className="nav" to="/dashboard/manageShops">
           DashBoard

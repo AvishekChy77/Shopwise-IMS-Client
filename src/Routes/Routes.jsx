@@ -4,6 +4,7 @@ import Root from "../Layouts/Root";
 import CreateShop from "../Pages/CreateShop/CreateShop";
 import AddProduct from "../Pages/Dashboard/AddProduct/AddProduct";
 import AdminSalesData from "../Pages/Dashboard/AdminSalesData/AdminSalesData";
+import Feedback from "../Pages/Dashboard/Feedback/Feedback";
 import ManageShops from "../Pages/Dashboard/ManageShops/ManageShops";
 import Payment from "../Pages/Dashboard/Payment/Payment";
 import PaymentHistory from "../Pages/Dashboard/PaymentHistory/PaymentHistory";
@@ -49,6 +50,14 @@ const router = createBrowserRouter([
           <PrivateRoutes>
             <CreateShop />
           </PrivateRoutes>
+        ),
+      },
+      {
+        path: "feedback",
+        element: (
+          <ManagerRoutes>
+            <Feedback />
+          </ManagerRoutes>
         ),
       },
     ],
