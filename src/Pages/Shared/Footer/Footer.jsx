@@ -2,6 +2,9 @@ import { FaCcMastercard, FaCcVisa } from "react-icons/fa";
 import { SiAmericanexpress } from "react-icons/si";
 
 const Footer = () => {
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+
   return (
     <div className="horizontal-scroll2 bg-cover h-[400px]">
       <div className="horizontal-scroll bg-cover h-[400px] flex flex-col justify-end">
@@ -12,7 +15,7 @@ const Footer = () => {
               <span className=" text-[#A2C579]">Wise</span>
             </h2>
             <p>Guiding Your Buisness into Success</p>
-            <p>Address: 52/A Nikunjo, Dhaka</p>
+            <p>Address: 52/A Asgrad</p>
             <p>Email: shopwisehr@gmail.com</p>
           </aside>
           <nav>
@@ -65,7 +68,7 @@ const Footer = () => {
         </footer>
         <footer className="footer footer-center py-1 md:p-4  ">
           <aside>
-            <p>Copyright © 2023 - Shopwise</p>
+            <p>Copyright © {currentYear} - Shopwise</p>
           </aside>
         </footer>
       </div>
