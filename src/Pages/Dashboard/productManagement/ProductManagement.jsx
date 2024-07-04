@@ -106,9 +106,9 @@ const ProductManagement = () => {
                     <tr key={item._id}>
                       <td className="px-2">
                         <div className="flex items-center gap-3">
-                          <div className="avatar">
-                            <div className="mask mask-squircle w-10 h-10 sm:w-12 sm:h-12">
-                              <img
+                          <div className="">
+                            <div className="">
+                              <img className="border border-zinc-400 object-contain w-10 h-10 sm:w-12 sm:h-12 rounded-full"
                                 src={item.img}
                                 alt="Avatar Tailwind CSS Component"
                               />

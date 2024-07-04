@@ -127,13 +127,13 @@ const Register = () => {
                   className="input input-bordered bg-white"
                 />
                 {errors.password?.type === "required" && (
-                  <span>Don't forget to choose your Password</span>
+                  <span className="text-red-500 text-sm mt-1">Don't forget to choose your Password</span>
                 )}
                 {errors.password?.type === "minLength" && (
-                  <span>Password must be atleast 6 characters</span>
+                  <span className="text-red-500 text-sm mt-1">Password must be atleast 6 characters</span>
                 )}
                 {errors.password?.type === "pattern" && (
-                  <span>
+                  <span className="text-red-500 text-sm mt-1">
                     Add At least one lowercase letter, one uppercase letter, one
                     digit & one special character
                   </span>

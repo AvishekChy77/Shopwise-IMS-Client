@@ -3,10 +3,10 @@ const ProductCard = ({ item, handleCart }) => {
     item || {};
   return (
     <div className="card w-72 bg-base-100 text-white shadow-xl">
-      <figure>
-        <img className=" w-full h-40" src={img} alt="product" />
+      <figure className="p-2">
+        <img className="w-full h-40 rounded-lg" src={img} alt="product" />
       </figure>
-      <div className="card-body pl-4">
+      <div className="card-body pl-4 text-black">
         <h2 className="card-title">{productName}</h2>
         <p>
           Product Id: <span className="text-xs">{_id}</span>
