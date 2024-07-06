@@ -2,7 +2,7 @@ const ProductCard = ({ item, handleCart }) => {
   const { productName, _id, quantity, discount, sellingPrice, img } =
     item || {};
   return (
-    <div className="card w-72 bg-base-100 text-white shadow-xl">
+    <div className="card w-72 bg-slate-50 shadow-xl">
       <figure className="p-2">
         <img className="w-full h-40 rounded-lg" src={img} alt="product" />
       </figure>
@@ -17,7 +17,7 @@ const ProductCard = ({ item, handleCart }) => {
         <div className="card-actions justify-end">
           <button
             onClick={() => handleCart(item)}
-            className="btn btn-outline bg-white text-black ml-3 btn-sm "
+            className="btn btn-outline hover:text-white hover:bg-black text-black ml-3 btn-sm "
             type="submit"
           >
             Add to cart
