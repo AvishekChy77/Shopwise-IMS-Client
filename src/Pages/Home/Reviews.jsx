@@ -7,15 +7,17 @@ import "swiper/css/pagination";
 
 // import required modules
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+// import axios from "axios";
 import { Autoplay, Pagination } from "swiper/modules";
+import useAxiosPublic from "../../Hooks/useAxiosPublic";
 import NavigationButtons from "./NavigationButtons";
 
 const Reviews = () => {
+  const axiosPublic = useAxiosPublic();
   const { data: reviews } = useQuery({
     queryKey: ["reviews"],
     queryFn: async () => {
-      const res = await axios.get("http://localhost:5000/reviews");
+      const res = await axiosPublic.get("/reviews");
       return res.data;
     },
   });
