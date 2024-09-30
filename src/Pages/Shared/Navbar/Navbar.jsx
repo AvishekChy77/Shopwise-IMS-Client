@@ -1,52 +1,18 @@
 import { useContext } from "react";
 import { Link, NavLink } from "react-router-dom";
-import useUserData from "../../../Hooks/useUserData";
 import { AuthContext } from "../../../Provider/AuthProvider";
 import "./Navbar.css";
+import Navs from "./Navs";
 
 const Navbar = () => {
   const { user, logOut } = useContext(AuthContext);
   console.log(user);
-  const { userDB } = useUserData();
 
   const handleSignOut = () => {
     logOut()
       .then()
       .catch((error) => console.log(error.message));
   };
-  const Navbar = (
-    <>
-      <NavLink className="nav" to="/">
-        Home
-      </NavLink>
-      <NavLink target="_blank" className="nav" to="/watchDemo">
-        Watch Demo
-      </NavLink>
-      {userDB?.role !== "manager" && userDB?.role !== "admin" && (
-        <NavLink className="nav" to="/createStore">
-          Create Store
-        </NavLink>
-      )}
-      {userDB?.role === "manager" && (
-        <NavLink className="nav" to="/dashboard/productManagement">
-          DashBoard
-        </NavLink>
-      )}
-      {userDB?.role === "manager" && (
-        <NavLink className="nav" to="/feedback">
-          Feedback
-        </NavLink>
-      )}
-      {userDB?.role === "admin" && (
-        <NavLink className="nav" to="/dashboard/manageShops">
-          DashBoard
-        </NavLink>
-      )}
-      <NavLink className="nav" to="/register">
-        Register
-      </NavLink>
-    </>
-  );
   return (
     <div className="navbar  pt-1">
       <div className="w-2/3 md:w-1/2 navbar-start">
@@ -74,7 +40,7 @@ const Navbar = () => {
             tabIndex={0}
             className="menu menu-sm dropdown-content text-white bg-black mt-3 z-[1] p-2 shadow Navbar rounded-box w-52"
           >
-            {Navbar}
+            <Navs />
           </ul>
         </div>
         <div className="font-logo flex items-center text-xl md:text-2xl lg:text-3xl font-bold">
@@ -86,7 +52,7 @@ const Navbar = () => {
       </div>
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal text-base md:text-lg font-medium flex gap-3 md:gap-7 Navbar">
-          {Navbar}
+          <Navs />
         </ul>
       </div>
       <div className="w-1/3 md:w-1/2 navbar-end">

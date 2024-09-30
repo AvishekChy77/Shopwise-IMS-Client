@@ -4,10 +4,10 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
+/* body {
   background-color: #fffbf5;
   color: black;
-}
+} */
 .video-responsive {
   overflow: hidden;
   padding-bottom: 56.25%;
