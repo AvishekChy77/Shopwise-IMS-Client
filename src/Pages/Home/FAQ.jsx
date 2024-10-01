@@ -2,7 +2,7 @@ import Lottie from "lottie-react";
 import faq from "../../assets/faq.json";
 const Faq = () => {
   return (
-    <div className="flex flex-col items-center justify-between gap-10">
+    <div className="px-2 flex flex-col items-center justify-between gap-10">
       <div className="flex flex-col items-center ">
         <Lottie className="w-40 -mb-5" animationData={faq} autoPlay={true} />
         <h2 className="text-2xl sm:text-3xl text-black md:text-4xl xl:text-5xl font-semibold">

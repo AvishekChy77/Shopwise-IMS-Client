@@ -2,11 +2,7 @@ import Lottie from "lottie-react";
 import { useContext, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import {
-  LoadCanvasTemplate,
-  loadCaptchaEnginge,
-  validateCaptcha,
-} from "react-simple-captcha";
+import { LoadCanvasTemplate, loadCaptchaEnginge, validateCaptcha } from "react-simple-captcha";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 // import useAxiosPublic from "../../Hooks/useAxiosPublic";
@@ -87,14 +83,17 @@ const Login = () => {
   // };
 
   const handleValueCap = (e) => {
-    const user_captcha_value = e.target.value;
+    const userInput = e.target.value;
+    console.log(userInput);
 
-    if (validateCaptcha(user_captcha_value)) {
-      //   alert("Captcha Matched");
-      setDisabled(false);
-    } else {
-      //   alert("Captcha Does Not Match");
-      setDisabled(true);
+    if(userInput.length === 6){
+      if (validateCaptcha(userInput)) {
+        //   alert("Captcha Matched");
+        setDisabled(false);
+      } else {
+        //   alert("Captcha Does Not Match");
+        setDisabled(true);
+      }
     }
   };
 
@@ -118,7 +117,7 @@ const Login = () => {
                   type="email"
                   placeholder="email"
                   name="email"
-                  className="input  bg-white input-bordered"
+                  className="input bg-white input-bordered"
                   required
                 />
               </div>
@@ -139,7 +138,7 @@ const Login = () => {
                   <LoadCanvasTemplate />
                 </label>
                 <input
-                  onBlur={handleValueCap}
+                  onChange={handleValueCap}
                   type="text"
                   placeholder="type the text above"
                   name="captcha"

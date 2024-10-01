@@ -17,7 +17,7 @@ const Services = () => {
         </p>
       </div>
       <div className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-        <div className=" flex flex-col items-start max-w-xs group">
+        <div className=" flex flex-col items-start max-w-xs group cursor-default">
           <GoGraph className=" group-hover:text-teal-500" size={40} />
           <h2 className=" text-lg font-bold mb-1">Increase sales</h2>
           <p className=" grow text-justify">
@@ -26,7 +26,7 @@ const Services = () => {
             Shopify account, and start selling your merchandise.
           </p>
         </div>
-        <div className=" flex flex-col items-start max-w-xs group">
+        <div className=" flex flex-col items-start max-w-xs group cursor-default">
           <SiBookstack className=" group-hover:text-teal-500" size={40} />
           <h2 className=" text-lg font-bold mb-1">Manage orders</h2>
           <p className=" grow text-justify">
@@ -36,7 +36,7 @@ const Services = () => {
             application.
           </p>
         </div>
-        <div className=" flex flex-col items-start max-w-xs group">
+        <div className=" flex flex-col items-start max-w-xs group cursor-default">
           <FaShippingFast className=" group-hover:text-teal-500" size={40} />
           <h2 className=" text-lg font-bold mb-1">
             Multiple shipping integrations
@@ -48,7 +48,7 @@ const Services = () => {
             system.
           </p>
         </div>
-        <div className=" flex flex-col items-start max-w-xs group">
+        <div className=" flex flex-col items-start max-w-xs group cursor-default">
           <SlLocationPin className=" group-hover:text-teal-500" size={40} />
           <h2 className=" text-lg font-bold mb-1">End-to-end tracking</h2>
           <p className=" grow text-justify">
@@ -58,7 +58,7 @@ const Services = () => {
             of each batch.
           </p>
         </div>
-        <div className=" flex flex-col items-start max-w-xs group">
+        <div className=" flex flex-col items-start max-w-xs group cursor-default">
           <GiGearStickPattern
             className=" group-hover:text-teal-500"
             size={40}
@@ -72,7 +72,7 @@ const Services = () => {
             without breaking a sweat.
           </p>
         </div>
-        <div className=" flex flex-col items-start max-w-xs group">
+        <div className=" flex flex-col items-start max-w-xs group cursor-default">
           <PiWarehouse className=" group-hover:text-teal-500" size={40} />
           <h2 className=" text-lg font-bold mb-1">Warehouse Management</h2>
           <p className=" grow text-justify">
