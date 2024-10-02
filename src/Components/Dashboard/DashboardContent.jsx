@@ -4,7 +4,7 @@ import Topbar from "./Topbar";
 
 const DashboardContent = () => {
   return (
-    <div className="drawer-content ">
+    <div className="drawer-content">
       <div className="flex p-4 justify-between lg:hidden">
         <div className="font-logo text-xl md:text-2xl lg:text-3xl font-bold">
           <Link to="/">

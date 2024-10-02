@@ -39,20 +39,18 @@ const ProductManagement = () => {
       }
     });
   };
+  if(isShopLoading){
+    return <div className=" max-w-4xl mx-auto p-5 mt-5 text-center">
+    <span className="loading loading-spinner loading-lg"></span>
+  </div>
+  }
+
   return (
     <>
       <Helmet>
         <title>ShopWise | Product Management</title>
       </Helmet>
-      <div className="   space-y-5">
-        <div className="flex items-center justify-center">
-          {isShopLoading && (
-            <div className=" max-w-4xl mx-auto p-5 mt-5 text-center">
-              <span className="loading loading-spinner loading-lg"></span>
-            </div>
-          )}
-          <img className="w-[80px] md:w-[100px]" src={shop?.shopLogo} alt="" />
-        </div>
+      <div className="space-y-5">
 
         {products?.length === 0 ? (
           <div className=" text-center">
