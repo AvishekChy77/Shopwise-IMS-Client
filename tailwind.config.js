@@ -11,7 +11,11 @@ export default {
         Poppins: "'Poppins', sans-serif",
         logo:"'Lobster', sans-serif",
         YSerif:"'Young Serif', serif"
-      }
+      },
+      screens: {
+        'desktop': '1440px',
+        // => @media (min-width: 1440px) { ... }
+      },
     },
   },
   plugins: [require("daisyui")],
