@@ -1,6 +1,7 @@
 import { Helmet } from "react-helmet-async";
-import { FaEdit } from "react-icons/fa";
-import { IoTrashBin } from "react-icons/io5";
+import { CiEdit } from "react-icons/ci";
+import { GoTrash } from "react-icons/go";
+import { IoMdAddCircleOutline } from "react-icons/io";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
@@ -10,7 +11,8 @@ const ProductManagement = () => {
   const axiosSecure = useAxiosSecure();
   const { shop, isShopLoading, products, isProductsLoading, refetch } =
     useShopProductDB();
-  console.log(shop, products);
+  const isLimitReached = shop?.limit === products?.length;
+  console.log(shop, products, isLimitReached);
 
   const handleDelete = (item) => {
     console.log(item);
@@ -39,10 +41,12 @@ const ProductManagement = () => {
       }
     });
   };
-  if(isShopLoading){
-    return <div className=" max-w-4xl mx-auto p-5 mt-5 text-center">
-    <span className="loading loading-spinner loading-lg"></span>
-  </div>
+  if (isShopLoading) {
+    return (
+      <div className=" max-w-4xl mx-auto p-5 mt-5 text-center">
+        <span className="loading loading-spinner loading-lg"></span>
+      </div>
+    );
   }
 
   return (
@@ -50,47 +54,39 @@ const ProductManagement = () => {
       <Helmet>
         <title>ShopWise | Product Management</title>
       </Helmet>
-      <div className="space-y-5">
-
+      <div className="space-y-5  p-10">
         {products?.length === 0 ? (
-          <div className=" text-center">
-            <h2 className="text-2xl sm:text-3xl font-semibold my-5">
+          <div className="flex flex-col items-center justify-center gap-10">
+            <h2 className="text-2xl sm:text-3xl font-semibold">
               Add your first product today!
             </h2>
             <Link to="/dashboard/addProduct">
-              <button
-                disabled={shop?.limit === products?.length}
-                className="btn btn-sm btn-outline text-black hover:text-white hover:bg-black"
-              >
-                Add Product
-              </button>
+              <IoMdAddCircleOutline
+                size={80}
+                color="grey"
+                className=" opacity-75 hover:opacity-100 cursor-pointer"
+              />
             </Link>
           </div>
         ) : (
-          <div className=" space-y-5">
+          <div className="space-y-5">
             <div className="flex justify-between items-center">
-              <h2 className=" text-xl md:text-2xl font-semibold">
-                Total Products:{products?.length}
-              </h2>
-              {isProductsLoading && (
-                <div className=" max-w-4xl mx-auto p-5 mt-5 text-center">
+              {isProductsLoading ? (
+                <div className="max-w-4xl mx-auto p-5 mt-5 text-center">
                   <span className="loading loading-spinner loading-lg"></span>
                 </div>
+              ) : (
+                <h2 className="text-lg desktop:text-xl font-semibold">
+                  Total Products:{products?.length}
+                </h2>
               )}
-              <Link to="/dashboard/addProduct">
-                <button
-                  disabled={shop?.limit === products?.length}
-                  className="btn btn-sm btn-outline text-black hover:text-white hover:bg-black"
-                >
-                  Add Product
-                </button>
-              </Link>
             </div>
             <div className="overflow-x-auto text-center">
               <table className="table">
                 {/* head */}
-                <thead className=" bg-cyan-900 text-white ">
-                  <tr>
+                <thead>
+                  <tr className="text-black">
+                    <th className="px-2">#</th>
                     <th className="px-2">IMAGE</th>
                     <th className="px-2">NAME</th>
                     <th className="px-2">Quantity</th>
@@ -100,13 +96,15 @@ const ProductManagement = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {products?.map((item) => (
+                  {products?.map((item, idx) => (
                     <tr key={item._id}>
+                      <td className="px-2">{idx}</td>
                       <td className="px-2">
                         <div className="flex items-center gap-3">
                           <div className="">
                             <div className="">
-                              <img className="border border-zinc-400 object-contain w-10 h-10 sm:w-12 sm:h-12 rounded-full"
+                              <img
+                                className="bg-slate-200 border border-zinc-400 object-contain w-10 h-10 sm:w-12 sm:h-12 rounded-full"
                                 src={item.img}
                                 alt="Avatar Tailwind CSS Component"
                               />
@@ -115,21 +113,18 @@ const ProductManagement = () => {
                         </div>
                       </td>
                       <td className="px-2">{item.productName}</td>
-                      <td className="px-2">{item.quantity}</td>
-                      <td className="px-2">{item.saleCount}</td>
-                      <td className="px-2">
+                      <td>{item.quantity}</td>
+                      <td>{item.saleCount}</td>
+                      <td>
                         <Link to={`/dashboard/updateProduct/${item._id}`}>
                           <button>
-                            <FaEdit size={26} />
+                            <CiEdit size={24} />
                           </button>
                         </Link>
                       </td>
-                      <td className="px-2">
+                      <td>
                         <button onClick={() => handleDelete(item)}>
-                          <IoTrashBin
-                            className=" hover:text-red-500"
-                            size={26}
-                          />
+                          <GoTrash className=" hover:text-red-500" size={24} />
                         </button>
                       </td>
                     </tr>

@@ -4,7 +4,7 @@ import Topbar from "./Topbar";
 
 const DashboardContent = () => {
   return (
-    <div className="drawer-content">
+    <div className="drawer-content min-h-screen">
       <div className="flex p-4 justify-between lg:hidden">
         <div className="font-logo text-xl md:text-2xl lg:text-3xl font-bold">
           <Link to="/">
@@ -17,7 +17,7 @@ const DashboardContent = () => {
         </label>
       </div>
       <Topbar />
-      <div className="flex flex-col min-h-screen px-4 mt-5 lg:px-10 bg-white w-[390px] sm:w-[500px] md:w-[650px] lg:w-[800px] xl:w-[950px] mx-auto">
+      <div className="flex flex-col  px-4 mt-5 lg:px-10 bg-white w-[390px] sm:w-[500px] md:w-[650px] lg:w-[800px] xl:w-[950px] mx-auto">
         <Outlet></Outlet>
       </div>
     </div>
