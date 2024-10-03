@@ -8,11 +8,11 @@ import { SlLocationPin } from "react-icons/sl";
 const Services = () => {
   return (
     <div className="flex flex-col items-center justify-between gap-10">
-      <div className=" text-center space-y-4">
-        <h2 className=" text-3xl text-black md:text-4xl xl:text-5xl font-bold">
+      <div className="font-YSerif text-center space-y-4">
+        <h2 className="text-3xl text-black md:text-4xl xl:text-5xl">
           The one-stop platform you need to thrive
         </h2>
-        <p className=" text-slate-950 font-semibold text-lg xl:text-xl">
+        <p className=" text-slate-950 text-lg xl:text-xl">
           Everything you need to succeed in one intuitive cloud system.
         </p>
       </div>

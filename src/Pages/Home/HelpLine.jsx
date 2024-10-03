@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const HelpLine = () => {
   return (
     <div className="px-2 flex flex-col items-center justify-between gap-10">
-      <h2 className=" text-2xl sm:text-3xl text-black md:text-4xl xl:text-5xl font-bold">
+      <h2 className="font-YSerif text-2xl sm:text-3xl text-black md:text-4xl xl:text-5xl">
         Helping businesses do more
       </h2>
       <div className="grid gap-5 grid-cols-1 md:grid-cols-2">

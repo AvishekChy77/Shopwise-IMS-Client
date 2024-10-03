@@ -19,7 +19,7 @@ const Navbar = () => {
         <div className="dropdown">
           <label
             tabIndex={0}
-            className="btn px-2 btn-ghost text-black lg:hidden"
+            className="px-1 cursor-pointer text-black lg:hidden"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -38,12 +38,12 @@ const Navbar = () => {
           </label>
           <ul
             tabIndex={0}
-            className="menu menu-sm dropdown-content text-white bg-black mt-3 z-[1] p-2 shadow Navbar rounded-box w-52"
+            className="menu menu-sm dropdown-content bg-white mt-3 z-[1] p-5 shadow w-80 h-72 space-y-5"
           >
             <Navs />
           </ul>
         </div>
-        <div className="font-logo flex items-center text-xl md:text-2xl lg:text-3xl font-bold">
+        <div className="font-logo ml-2 flex items-center text-xl md:text-2xl lg:text-3xl font-bold">
           <Link to="/">
             <span className=" text-[#265073]">Shop</span>
             <span className=" text-[#A2C579]">Wise</span>
@@ -51,7 +51,7 @@ const Navbar = () => {
         </div>
       </div>
       <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal text-base md:text-lg font-medium flex gap-3 md:gap-7 Navbar">
+        <ul className="menu menu-horizontal md:text-lg font-medium flex gap-3 md:gap-7 Navbar">
           <Navs />
         </ul>
       </div>
@@ -84,7 +84,7 @@ const Navbar = () => {
           </div>
         ) : (
           <NavLink to="/login">
-            <button className="btn btn-sm btn-outline text-black hover:text-white hover:bg-black">
+            <button className="btn btn-sm bg-[#2b5b81] text-white hover:bg-[#265073]">
               LogIn
             </button>
           </NavLink>

@@ -24,7 +24,7 @@ const Reviews = () => {
   console.log(reviews);
   return (
     <div className="my-10 px-2 max-w-3xl text-center mx-auto">
-      <h2 className=" text-2xl sm:text-3xl text-rose-600 mb-14 md:text-4xl xl:text-5xl font-bold">
+      <h2 className="font-YSerif text-2xl sm:text-3xl mb-14 md:text-4xl xl:text-5xl">
         Wall of Love
       </h2>
       <Swiper

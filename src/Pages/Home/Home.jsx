@@ -12,7 +12,7 @@ const Home = () => {
       <Helmet>
         <title>ShopWise | Home</title>
       </Helmet>
-      <div className=" space-y-16 mb-16">
+      <div className=" space-y-28 mb-16">
         <Banner></Banner>
         <Buisnesses></Buisnesses>
         <Services></Services>

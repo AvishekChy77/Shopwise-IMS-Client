@@ -5,7 +5,7 @@ const Faq = () => {
     <div className="px-2 flex flex-col items-center justify-between gap-10">
       <div className="flex flex-col items-center ">
         <Lottie className="w-40 -mb-5" animationData={faq} autoPlay={true} />
-        <h2 className="text-2xl sm:text-3xl text-black md:text-4xl xl:text-5xl font-semibold">
+        <h2 className="font-YSerif text-2xl sm:text-3xl text-black md:text-4xl xl:text-5xl">
           Frequently asked questions
         </h2>
       </div>
