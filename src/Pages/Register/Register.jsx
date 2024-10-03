@@ -69,7 +69,7 @@ const Register = () => {
           <div className="text-center md:w-1/2 lg:text-left">
             <Lottie animationData={animationData} autoPlay={true} />
           </div>
-          <div className="card md:w-1/2 p-7 max-w-sm shadow-2xl">
+          <div className="card md:w-1/2 p-7 lg:p-4 max-w-sm shadow-2xl">
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="form-control">
                 <label className="label">
@@ -80,7 +80,7 @@ const Register = () => {
                   {...register("displayName")}
                   placeholder="Your name"
                   name="displayName"
-                  className="input input-bordered bg-white"
+                  className="input bg-white border border-gray-300 shadow-sm focus:outline-none focus:ring-1 focus:ring-slate-400"
                   required
                 />
               </div>
@@ -93,7 +93,7 @@ const Register = () => {
                   {...register("photoURL")}
                   placeholder="Your photo url"
                   name="photoURL"
-                  className="input input-bordered bg-white"
+                  className="input bg-white border border-gray-300 shadow-sm focus:outline-none focus:ring-1 focus:ring-slate-400"
                   required
                 />
               </div>
@@ -106,7 +106,7 @@ const Register = () => {
                   {...register("email")}
                   placeholder="email"
                   name="email"
-                  className="input input-bordered bg-white"
+                  className="input bg-white border border-gray-300 shadow-sm focus:outline-none focus:ring-1 focus:ring-slate-400"
                   required
                 />
               </div>
@@ -124,7 +124,7 @@ const Register = () => {
                   })}
                   placeholder="password"
                   name="password"
-                  className="input input-bordered bg-white"
+                  className="input bg-white border border-gray-300 shadow-sm focus:outline-none focus:ring-1 focus:ring-slate-400"
                 />
                 {errors.password?.type === "required" && (
                   <span className="text-red-500 text-sm mt-1">Don't forget to choose your Password</span>
@@ -146,10 +146,10 @@ const Register = () => {
               </div>
             </form>
 
-            <p className="flex justify-between">
+            <p className="flex justify-between mt-1">
               <small>Already a member?</small>{" "}
               <Link className=" hover:text-blue-500" to="/login">
-                LogIn
+                Login
               </Link>
             </p>
             <SocialLogin></SocialLogin>

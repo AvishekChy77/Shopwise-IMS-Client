@@ -28,12 +28,12 @@ const SocialLogin = () => {
       .catch((error) => console.log(error));
   };
   return (
-    <div className=" w-full">
+    <div className="w-full">
       <div
         onClick={() => handleSocialSignIn(googleLogIn)}
-        className=" cursor-pointer bg-slate-200 flex rounded-md gap-5 justify-center items-center hover:bg-slate-400 text-lg "
+        className="cursor-pointer bg-sky-200 flex rounded-md gap-5 justify-center items-center hover:bg-sky-500 text-lg "
       >
-        <span className="py-2  font-semibold">Continue with</span>
+        <span className="py-2 font-semibold">Continue with</span>
         <FcGoogle></FcGoogle>
       </div>
     </div>

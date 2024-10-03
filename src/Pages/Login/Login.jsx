@@ -102,12 +102,12 @@ const Login = () => {
       <Helmet>
         <title>ShopWise | LogIn</title>
       </Helmet>
-      <div className="hero min-h-screen ">
+      <div className="hero">
         <div className="hero-content justify-between flex-col lg:flex-row">
           <div className="text-center md:w-1/2 lg:text-left">
             <Lottie animationData={animationData} autoPlay={true} />
           </div>
-          <div className="card md:w-1/2 p-7 max-w-sm shadow-2xl">
+          <div className="card md:w-1/2 p-7 lg:p-4 max-w-sm shadow-2xl">
             <form onSubmit={handleLogin}>
               <div className="form-control">
                 <label className="label">
@@ -117,7 +117,7 @@ const Login = () => {
                   type="email"
                   placeholder="email"
                   name="email"
-                  className="input bg-white input-bordered"
+                  className="input bg-white border border-gray-300 shadow-sm focus:outline-none focus:ring-1 focus:ring-slate-400"
                   required
                 />
               </div>
@@ -129,7 +129,7 @@ const Login = () => {
                   type="password"
                   placeholder="password"
                   name="password"
-                  className="input bg-white input-bordered"
+                  className="input bg-white border border-gray-300 shadow-sm focus:outline-none focus:ring-1 focus:ring-slate-400"
                   required
                 />
               </div>
@@ -142,7 +142,7 @@ const Login = () => {
                   type="text"
                   placeholder="type the text above"
                   name="captcha"
-                  className="input bg-white input-bordered"
+                  className="input bg-white border border-gray-300 shadow-sm focus:outline-none focus:ring-1 focus:ring-slate-400"
                   required
                 />
               </div>
@@ -156,7 +156,7 @@ const Login = () => {
               </div>
             </form>
             {errorMsg && <p>{errorMsg}</p>}
-            <p className="flex justify-between">
+            <p className="flex justify-between mt-1">
               <small>New here?</small>{" "}
               <Link
                 className=" hover:text-blue-500"
