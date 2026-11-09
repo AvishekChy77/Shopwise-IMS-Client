@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { Helmet } from "react-helmet-async";
+import { FiSearch } from "react-icons/fi";
+import { IoCartOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
+import Avatar from "../../../Components/Avatar";
+import { PageTransition } from "../../../Components/Motion";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import useShopProductDB from "../../../Hooks/useShopProductDB";
 import ProductCard from "./ProductCard";
@@ -9,25 +13,20 @@ import ProductCard from "./ProductCard";
 const SalesCollection = () => {
   const { shop, isShopLoading, products, isProductsLoading, refetch } =
     useShopProductDB();
-  const [items, setitems] = useState(products);
+  const [query, setQuery] = useState("");
   const axiosSecure = useAxiosSecure();
-  console.log(items, products);
-  const handleSearch = (e) => {
-    e.preventDefault();
-    const form = new FormData(e.currentTarget);
-    const productId = form.get("productId");
-    console.log(productId);
-    e.currentTarget.reset();
-    const filteredItems = products?.filter((item) => item._id === productId);
-    setitems(filteredItems);
-    e.currentTarget.reset();
-  };
-  const handleAll = () => {
-    setitems(products);
-  };
+
+  // derived list — fixes the old bug where products never appeared
+  // until "Show all" was clicked (state captured an undefined initial value)
+  const q = query.trim().toLowerCase();
+  const items = q
+    ? products?.filter(
+        (item) =>
+          item._id === q || item.productName?.toLowerCase().includes(q)
+      )
+    : products;
 
   const handleCart = (item) => {
-    //send cart data
     const cartitem = {
       productId: item._id,
       img: item.img,
@@ -37,95 +36,78 @@ const SalesCollection = () => {
       shopName: shop.shopName,
       email: shop.email,
     };
-    console.log(cartitem);
     axiosSecure.post("/carts", cartitem).then((res) => {
-      console.log(res.data);
       if (res.data.insertedId) {
         Swal.fire({
           title: "Item added to cart!",
-          showClass: {
-            popup: `
-                animate__animated
-                animate__fadeInUp
-                animate__faster
-              `,
-          },
-          hideClass: {
-            popup: `
-                animate__animated
-                animate__fadeOutDown
-                animate__faster
-              `,
-          },
+          icon: "success",
+          confirmButtonColor: "#265073",
+          timer: 1400,
+          showConfirmButton: false,
         });
         refetch();
       }
     });
   };
+
+  if (isShopLoading || isProductsLoading) {
+    return (
+      <div className="mx-auto max-w-4xl p-10 text-center">
+        <span className="loading loading-spinner loading-lg text-brand-700"></span>
+      </div>
+    );
+  }
+
   return (
-    <>
+    <PageTransition>
       <Helmet>
         <title>ShopWise | Sales-Collection</title>
       </Helmet>
-      <div className=" my-10 flex flex-col items-center space-y-5 ">
-        {isShopLoading && (
-          <div className=" max-w-4xl mx-auto p-5 mt-5 text-center">
-            <span className="loading loading-spinner loading-lg"></span>
+
+      <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <Avatar src={shop?.shopLogo} name={shop?.shopName} className="size-14" />
+          <div>
+            <h1 className="font-display text-2xl font-bold text-brand-950">
+              Sales collection
+            </h1>
+            <p className="text-sm text-slate-400">
+              {products?.length ?? 0} products ready to sell
+            </p>
           </div>
-        )}
-        <img className="w-[80px] md:w-[100px]" src={shop?.shopLogo} alt="" />
-        <h2 className=" text-lg md:text-xl text-center font-semibold text-sky-600">
-          You have {products?.length} products
-        </h2>
-        <form
-          onSubmit={handleSearch}
-          className=" flex items-center justify-center"
-        >
-          <input
-            type="text"
-            name="productId"
-            placeholder="Enter product Id"
-            required
-            className="input input-bordered h-10 bg-white text-black input-info w-full max-w-xs"
-          />
-          <button
-            className="btn btn-outline bg-white text-black ml-3 btn-sm "
-            type="submit"
-          >
-            Search
-          </button>
-        </form>
-        <button
-          className="btn btn-outline bg-white text-black ml-3 btn-sm "
-          type="submit"
-          onClick={handleAll}
-        >
-          Show all
-        </button>
-        {isProductsLoading && (
-          <div className=" max-w-4xl mx-auto p-5 mt-5 text-center">
-            <span className="loading loading-spinner loading-lg"></span>
-          </div>
-        )}
-        <div className="grid pt-5 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10">
-          {items?.map((item) => (
-            <ProductCard
-              key={item._id}
-              item={item}
-              handleCart={handleCart}
-            ></ProductCard>
-          ))}
         </div>
-        <Link to="/dashboard/shopCart">
-          <button
-            className="btn btn-outline mt-2 bg-red-600 text-white ml-3 btn-sm "
-            type="submit"
-          >
-            Go to Cart
-          </button>
+        <Link to="/dashboard/shopCart" className="btn-brand !px-5 !py-2.5 text-sm">
+          <IoCartOutline size={18} /> Go to cart
         </Link>
       </div>
-    </>
+
+      <div className="relative mb-8 max-w-md">
+        <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search by product name or ID"
+          className="input-modern !pl-11"
+        />
+      </div>
+
+      {items?.length === 0 ? (
+        <div className="surface mx-auto max-w-md p-10 text-center">
+          <p className="text-4xl">🔍</p>
+          <p className="font-display mt-3 font-bold text-brand-950">No products found</p>
+          <p className="mt-1 text-sm text-slate-400">
+            Nothing matches “{query}” — try a different name or ID.
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 justify-items-center gap-8 md:grid-cols-2 xl:grid-cols-3">
+          {items?.map((item) => (
+            <ProductCard key={item._id} item={item} handleCart={handleCart} />
+          ))}
+        </div>
+      )}
+    </PageTransition>
   );
 };
 

@@ -1,6 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
+import ReactApexChart from "react-apexcharts";
 import { Helmet } from "react-helmet-async";
+import { FaBoxesStacked, FaMoneyBillTrendUp, FaSackDollar } from "react-icons/fa6";
 import { IoMail } from "react-icons/io5";
+import { PageTransition } from "../../../Components/Motion";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 
 const AdminSalesData = () => {
@@ -20,81 +23,145 @@ const AdminSalesData = () => {
       return res.data;
     },
   });
-  const totalProducts = products?.reduce(
-    (total, item) => total + item.quantity,
+
+  const totalProducts = products?.reduce((total, item) => total + (item.quantity || 0), 0);
+  const totalSale = products?.reduce((total, item) => total + (item.saleCount || 0), 0);
+  const totalIncome = products?.reduce(
+    (total, item) => total + (item.saleCount || 0) * (item.sellingPrice || 0),
     0
   );
-  const totalSale = products?.reduce(
-    (total, item) => total + item.saleCount,
-    0
-  );
+
+  const topSellers = [...(products || [])]
+    .sort((a, b) => (b.saleCount || 0) - (a.saleCount || 0))
+    .slice(0, 6);
+
+  const chart = {
+    series: [{ name: "Units sold", data: topSellers.map((p) => p.saleCount || 0) }],
+    options: {
+      chart: { type: "bar", toolbar: { show: false } },
+      colors: ["#265073"],
+      plotOptions: { bar: { borderRadius: 6, columnWidth: "55%" } },
+      dataLabels: { enabled: false },
+      grid: { borderColor: "#e2e8f0", strokeDashArray: 4 },
+      xaxis: {
+        categories: topSellers.map((p) =>
+          (p.productName || "").length > 12
+            ? p.productName.slice(0, 12) + "…"
+            : p.productName
+        ),
+        labels: { style: { colors: "#94a3b8" } },
+      },
+      yaxis: { labels: { style: { colors: "#94a3b8" } } },
+    },
+  };
+
+  const stats = [
+    { label: "Total income", value: `Tk ${totalIncome ?? "—"}`, icon: <FaSackDollar /> },
+    { label: "Products in stock", value: totalProducts ?? "—", icon: <FaBoxesStacked /> },
+    { label: "Total sales", value: totalSale ?? "—", icon: <FaMoneyBillTrendUp /> },
+  ];
+
   return (
-    <>
+    <PageTransition>
       <Helmet>
         <title>ShopWise | Sales Summary</title>
       </Helmet>
-      <div className="flex flex-col items-center gap-5">
-        <h2 className=" text-xl md:text-3xl text-center font-semibold text-black">
-          Sales
-        </h2>
-        <div className="grid w-full mb-5 grid-cols-1 md:grid-cols-3 gap-5 align-middle">
-          <div className="h-32 lg:h-40 rounded text-white text-lg font-medium flex items-center justify-center shadow-lg  bg-gradient-to-r from-[#ff3434] to-[#e09c9c]">
-            <div className="flex items-start justify-center flex-col pl-2">
-              <p>{}</p>
-              <p>Total Income</p>
+
+      <div className="mb-8">
+        <h1 className="font-display text-2xl font-bold text-brand-950">
+          Platform overview
+        </h1>
+        <p className="text-sm text-slate-400">
+          Sales and users across every shop on ShopWise
+        </p>
+      </div>
+
+      <div className="mb-6 grid gap-5 md:grid-cols-3">
+        {stats.map((s) => (
+          <div key={s.label} className="surface flex items-center gap-4 p-6">
+            <span className="grid size-12 place-items-center rounded-2xl bg-gradient-to-br from-brand-600 to-brand-900 text-lg text-white">
+              {s.icon}
+            </span>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                {s.label}
+              </p>
+              <p className="font-display text-2xl font-extrabold text-brand-950">
+                {s.value}
+              </p>
             </div>
           </div>
-          <div className="h-32 lg:h-40 rounded text-white text-lg font-medium flex items-center justify-center shadow-lg  bg-gradient-to-r from-green-500 to-green-200">
-            <div className="flex items-start justify-center flex-col pl-2">
-              <p>{totalProducts}</p>
-              <p>Total Product</p>
-            </div>
-          </div>
-          <div className="h-32 lg:h-40 rounded text-white text-lg font-medium flex items-center justify-center shadow-lg  bg-gradient-to-r from-sky-500 to-sky-200">
-            <div className="flex items-start justify-center flex-col pl-2">
-              <p>{totalSale}</p>
-              <p>Total Sales</p>
-            </div>
-          </div>
+        ))}
+      </div>
+
+      {topSellers.length > 0 && (
+        <div className="surface mb-6 p-6">
+          <h3 className="font-display mb-2 font-bold text-brand-950">
+            Top selling products
+          </h3>
+          <ReactApexChart
+            options={chart.options}
+            series={chart.series}
+            type="bar"
+            height={260}
+          />
         </div>
-        <h2 className="mt-10 text-xl md:text-3xl text-center font-semibold text-black">
-          Users
-        </h2>
-        <div className="overflow-x-auto w-full text-center">
-          <table className="table">
-            {/* head */}
-            <thead className=" bg-cyan-900 text-white ">
-              <tr>
-                <th className="px-2">Name</th>
-                <th className="px-2">Email</th>
-                <th className="px-2">Shop Name</th>
-                <th className="px-2">Role</th>
-                <th className="px-2">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users?.map((user) => (
-                <tr key={user._id}>
-                  <td className="px-2">{user.name}</td>
-                  <td className="px-2">{user.email}</td>
-                  <td className="px-2">{user.shop ? user.shop : "none"}</td>
-                  <td className="px-2">{user.role ? user.role : "user"}</td>
-                  <td className="px-2">
-                    {user.shop || user.role === "admin" ? (
-                      ""
-                    ) : (
-                      <button className="">
-                        <IoMail className=" hover:text-blue-500" size={26} />{" "}
+      )}
+
+      <div className="surface overflow-x-auto">
+        <div className="border-b border-slate-200 px-6 py-4">
+          <h3 className="font-display font-bold text-brand-950">Users</h3>
+        </div>
+        <table className="table">
+          <thead>
+            <tr className="border-b border-slate-200 text-xs uppercase tracking-wider text-slate-400">
+              <th>Name</th>
+              <th>Email</th>
+              <th>Shop</th>
+              <th>Role</th>
+              <th className="text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users?.map((user) => (
+              <tr
+                key={user._id}
+                className="border-b border-slate-100 transition-colors last:border-0 hover:bg-brand-50/50"
+              >
+                <td className="font-semibold text-brand-950">{user.name}</td>
+                <td className="text-slate-500">{user.email}</td>
+                <td className="text-slate-500">{user.shop || "—"}</td>
+                <td>
+                  <span
+                    className={`rounded-full px-3 py-1 text-xs font-bold ${
+                      user.role === "admin"
+                        ? "bg-gold-500/20 text-gold-600"
+                        : user.role === "manager"
+                        ? "bg-leaf-400/20 text-leaf-700"
+                        : "bg-slate-200 text-slate-500"
+                    }`}
+                  >
+                    {user.role || "user"}
+                  </span>
+                </td>
+                <td>
+                  <div className="flex justify-end">
+                    {!user.shop && user.role !== "admin" && (
+                      <button
+                        aria-label="Send email"
+                        className="grid size-9 place-items-center rounded-lg text-slate-500 transition hover:bg-brand-700/10 hover:text-brand-700"
+                      >
+                        <IoMail size={20} />
                       </button>
                     )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
-    </>
+    </PageTransition>
   );
 };
 

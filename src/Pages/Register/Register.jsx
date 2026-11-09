@@ -1,20 +1,19 @@
-import axios from "axios";
 import { updateProfile } from "firebase/auth";
 import Lottie from "lottie-react";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { PageTransition } from "../../Components/Motion";
 import useAxiosPublic from "../../Hooks/useAxiosPublic";
 import { AuthContext } from "../../Provider/AuthProvider";
 import animationData from "../../assets/login.json";
+import { fileToCompressedDataUrl } from "../../utils/uploadImage";
 import SocialLogin from "../Login/SocialLogin";
 
 const Register = () => {
-  const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
-  const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
   const {
     register,
     handleSubmit,
@@ -22,165 +21,148 @@ const Register = () => {
     formState: { errors },
   } = useForm();
   const { createUser, auth } = useContext(AuthContext);
+  const [submitting, setSubmitting] = useState(false);
   const goTo = useNavigate();
   const axiosPublic = useAxiosPublic();
 
   const onSubmit = async (data) => {
-    console.log(data);
-    //   upload img to imgBB and get url
-    const selectedimage = data.photoURL[0];
-    const dataForm = new FormData();
-    dataForm.append("image", selectedimage);
-    console.log(selectedimage, dataForm);
-    const res = await axios.post(image_hosting_api, dataForm);
-    console.log(res.data);
-    if (res.data.success) {
-      createUser(data.email, data.password)
-        .then((response) => {
-          const loggedUser = response.user;
-          console.log(loggedUser);
+    setSubmitting(true);
+    try {
+      // optional avatar: compressed in the browser, stored with the user record
+      let photo = "";
+      const file = data.photoURL?.[0];
+      if (file) {
+        photo = await fileToCompressedDataUrl(file, { maxDimension: 240 });
+      }
 
-          updateProfile(auth.currentUser, {
-            displayName: data.displayName,
-            photoURL: res.data.data.display_url,
-          })
-            .then((res) => {
-              // Profile information updated successfully
-              // add to db
-              const userInfo = {
-                name: data.displayName,
-                email: data.email,
-              };
-              axiosPublic.post("/users", userInfo).then((res) => {
-                if (res.data.insertedId) {
-                  toast("Account created succesfully!");
-                  reset();
-                  goTo("/createStore");
-                }
-              });
-              console.log(res);
-            })
-            .catch((error) => {
-              // Handle profile update errors
-              console.log(error.message);
-            });
-        })
-        .catch((error) => {
-          console.log(error.message);
-        });
-    } else {
-      toast.error("Choose a valid file!");
+      await createUser(data.email, data.password);
+      await updateProfile(auth.currentUser, { displayName: data.displayName });
+
+      const userInfo = {
+        name: data.displayName,
+        email: data.email,
+        photo,
+      };
+      const res = await axiosPublic.post("/users", userInfo);
+      if (res.data.insertedId) {
+        toast("Account created successfully!");
+        reset();
+        goTo("/createStore");
+      }
+    } catch (error) {
+      toast.error(
+        error?.code === "auth/email-already-in-use"
+          ? "This email is already registered — try logging in."
+          : error.message || "Could not create the account"
+      );
+    } finally {
+      setSubmitting(false);
     }
   };
 
   return (
-    <>
+    <PageTransition>
       <Helmet>
         <title>ShopWise | Register</title>
       </Helmet>
-      <div className="hero min-h-screen ">
-        <div className="hero-content justify-between flex-col lg:flex-row">
-          <div className="text-center md:w-1/2 lg:text-left">
-            <Lottie animationData={animationData} autoPlay={true} />
+      <div className="container mx-auto px-4 py-14">
+        <div className="surface mx-auto grid max-w-4xl overflow-hidden !rounded-3xl lg:grid-cols-2">
+          {/* visual panel */}
+          <div className="relative hidden flex-col justify-center bg-gradient-to-br from-brand-700 to-brand-950 p-10 text-white lg:flex">
+            <div className="pointer-events-none absolute -left-16 -bottom-16 size-56 rounded-full bg-leaf-400/20 blur-3xl" />
+            <h1 className="font-display text-3xl font-bold">Join ShopWise</h1>
+            <p className="mt-3 text-sm text-white/70">
+              Create a free account and open your shop in minutes.
+            </p>
+            <Lottie animationData={animationData} autoPlay={true} className="mt-4" />
           </div>
-          <div className="card md:w-1/2 p-7 lg:p-4 max-w-sm shadow-2xl">
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text text-black">Name</span>
-                </label>
+
+          {/* form */}
+          <div className="p-8 md:p-10">
+            <h2 className="font-display text-2xl font-bold text-brand-950">
+              Create account
+            </h2>
+            <p className="mt-1 text-sm text-slate-400">It&apos;s free, forever</p>
+            <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4">
+              <div>
+                <label className="label-modern">Name</label>
                 <input
                   type="text"
                   {...register("displayName")}
                   placeholder="Your name"
                   name="displayName"
-                  className="input bg-white border border-gray-300 shadow-sm focus:outline-none focus:ring-1 focus:ring-slate-400"
+                  className="input-modern"
                   required
                 />
               </div>
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text text-black">Photo</span>
+              <div>
+                <label className="label-modern">
+                  Photo <span className="font-normal text-slate-400">(optional)</span>
                 </label>
-                {/* <input
-                  type="file"
-                  {...register("photoURL")}
-                  placeholder="Your photo url"
-                  name="photoURL"
-                  className="input bg-white border border-gray-300 shadow-sm focus:outline-none focus:ring-1 focus:ring-slate-400"
-                  required
-                /> */}
                 <input
                   type="file"
+                  accept="image/*"
                   {...register("photoURL")}
                   name="photoURL"
-                  className="file-input file-input-bordered file-input-md w-full"
+                  className="file-input file-input-bordered w-full rounded-xl bg-slate-50"
                 />
               </div>
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text text-black">Email</span>
-                </label>
+              <div>
+                <label className="label-modern">Email</label>
                 <input
                   type="email"
                   {...register("email")}
-                  placeholder="email"
+                  placeholder="you@shop.com"
                   name="email"
-                  className="input bg-white border border-gray-300 shadow-sm focus:outline-none focus:ring-1 focus:ring-slate-400"
+                  className="input-modern"
                   required
                 />
               </div>
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text text-black">Password</span>
-                </label>
+              <div>
+                <label className="label-modern">Password</label>
                 <input
                   type="password"
                   {...register("password", {
                     required: true,
                     minLength: 6,
-                    pattern:
-                      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).*$/,
+                    pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).*$/,
                   })}
-                  placeholder="password"
+                  placeholder="••••••••"
                   name="password"
-                  className="input bg-white border border-gray-300 shadow-sm focus:outline-none focus:ring-1 focus:ring-slate-400"
+                  className="input-modern"
                 />
                 {errors.password?.type === "required" && (
-                  <span className="text-red-500 text-sm mt-1">
-                    Don't forget to choose your Password
+                  <span className="mt-1 block text-sm text-rose-500">
+                    Don&apos;t forget to choose your password
                   </span>
                 )}
                 {errors.password?.type === "minLength" && (
-                  <span className="text-red-500 text-sm mt-1">
-                    Password must be atleast 6 characters
+                  <span className="mt-1 block text-sm text-rose-500">
+                    Password must be at least 6 characters
                   </span>
                 )}
                 {errors.password?.type === "pattern" && (
-                  <span className="text-red-500 text-sm mt-1">
-                    Add At least one lowercase letter, one uppercase letter, one
-                    digit & one special character
+                  <span className="mt-1 block text-sm text-rose-500">
+                    Add at least one lowercase letter, one uppercase letter, one digit
+                    &amp; one special character
                   </span>
                 )}
               </div>
-              <div className="form-control mt-6">
-                <button className="btn btn-outline text-black hover:text-white hover:bg-black">
-                  Register
-                </button>
-              </div>
+              <button disabled={submitting} className="btn-brand w-full">
+                {submitting ? "Creating account…" : "Register"}
+              </button>
             </form>
-
-            <p className="flex justify-between mt-1">
-              <small>Already a member?</small>{" "}
-              <Link className=" hover:text-blue-500" to="/login">
+            <p className="mt-4 flex justify-between text-sm text-slate-500">
+              <span>Already a member?</span>
+              <Link className="font-semibold text-brand-700 hover:underline" to="/login">
                 Login
               </Link>
             </p>
-            <SocialLogin></SocialLogin>
+            <SocialLogin />
           </div>
         </div>
       </div>
-    </>
+    </PageTransition>
   );
 };
 

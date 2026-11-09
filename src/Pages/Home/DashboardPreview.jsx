@@ -1,19 +1,37 @@
-import desktopview from "/ShopwiseDashboard.png"
+import { motion } from "framer-motion";
+import desktopview from "/ShopwiseDashboard.png";
+import { Reveal, Section } from "../../Components/Motion";
+import SectionHeading from "../../Components/SectionHeading";
+
 const DashboardPreview = () => {
   return (
-    <div className="flex flex-col items-center justify-between gap-10">
-      <div className="font-YSerif text-center space-y-4">
-        <h2 className="text-3xl text-black md:text-4xl xl:text-5xl">
-          Meet your next-gen inventory software
-        </h2>
-        <p className=" text-slate-950 text-lg xl:text-xl">
-          Engineered for growth
-        </p>
-      </div>
-      <div>
-        <img className="" src={desktopview} alt="" />
-      </div>
-    </div>
+    <Section className="container mx-auto px-4">
+      <SectionHeading
+        eyebrow="Product tour"
+        title={
+          <>
+            Meet your <span className="text-gradient">next-gen</span> inventory software
+          </>
+        }
+        subtitle="One dashboard for products, sales, and insights — engineered for growth."
+      />
+      <Reveal>
+        <motion.div
+          whileHover={{ y: -6 }}
+          transition={{ duration: 0.4 }}
+          className="relative mx-auto max-w-5xl"
+        >
+          <div className="absolute -inset-4 -z-10 rounded-[2rem] bg-gradient-to-br from-brand-500/20 via-transparent to-leaf-400/20 blur-2xl" />
+          {/* the artwork already includes a laptop frame */}
+          <img
+            src={desktopview}
+            alt="ShopWise dashboard preview"
+            loading="lazy"
+            className="w-full drop-shadow-2xl"
+          />
+        </motion.div>
+      </Reveal>
+    </Section>
   );
 };
 

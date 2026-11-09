@@ -1,14 +1,13 @@
-// Import Swiper React components
+import { useQuery } from "@tanstack/react-query";
+import { FaQuoteLeft, FaStar } from "react-icons/fa6";
+import { Autoplay, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-// Import Swiper styles
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-
-// import required modules
-import { useQuery } from "@tanstack/react-query";
-// import axios from "axios";
-import { Autoplay, Pagination } from "swiper/modules";
+import Avatar from "../../Components/Avatar";
+import { Reveal, Section } from "../../Components/Motion";
+import SectionHeading from "../../Components/SectionHeading";
 import useAxiosPublic from "../../Hooks/useAxiosPublic";
 import NavigationButtons from "./NavigationButtons";
 
@@ -21,47 +20,53 @@ const Reviews = () => {
       return res.data;
     },
   });
-  console.log(reviews);
+
+  if (!reviews?.length) return null;
+
   return (
-    <div className="my-10 px-2 max-w-3xl text-center mx-auto">
-      <h2 className="font-YSerif text-2xl sm:text-3xl mb-14 md:text-4xl xl:text-5xl">
-        Wall of Love
-      </h2>
-      <Swiper
-        spaceBetween={30}
-        loop={true}
-        pagination={{
-          clickable: true,
-        }}
-        autoplay={{
-          delay: 1800,
-          disableOnInteraction: false,
-        }}
-        modules={[Autoplay, Pagination]}
-        className="mySwiper shadow-xl bg-[#ECF4D6] rounded-md"
-      >
-        {reviews?.map((rev) => (
-          <SwiperSlide key={rev._id}>
-            <div className="p-8 mb-10  flex flex-col items-center justify-between gap-5">
-              <div className=" overflow-hidden h-20 w-20 rounded-full">
-                <img
-                  className="w-full h-full object-cover"
-                  src={rev.img}
-                  alt=""
-                />
+    <Section className="container mx-auto max-w-4xl px-4">
+      <SectionHeading
+        eyebrow="Wall of love"
+        title={
+          <>
+            Shopkeepers <span className="text-gradient">trust us</span>
+          </>
+        }
+        subtitle="Real words from businesses running on ShopWise every day."
+      />
+      <Reveal>
+        <Swiper
+          spaceBetween={30}
+          loop={true}
+          pagination={{ clickable: true }}
+          autoplay={{ delay: 3200, disableOnInteraction: false }}
+          modules={[Autoplay, Pagination]}
+          className="mySwiper"
+        >
+          {reviews.map((rev) => (
+            <SwiperSlide key={rev._id}>
+              <div className="surface mx-auto mb-12 flex max-w-2xl flex-col items-center gap-5 p-10 text-center">
+                <FaQuoteLeft className="text-3xl text-leaf-400" />
+                <p className="leading-relaxed text-slate-600">{rev.description}</p>
+                <div className="flex gap-1 text-gold-500">
+                  {[...Array(5)].map((_, i) => (
+                    <FaStar key={i} />
+                  ))}
+                </div>
+                <div className="flex items-center gap-3">
+                  <Avatar src={rev.img} name={rev.name} className="size-12" />
+                  <div className="text-left">
+                    <p className="font-display font-bold text-brand-950">{rev.name}</p>
+                    <p className="text-xs text-slate-400">{rev.designation}</p>
+                  </div>
+                </div>
               </div>
-              <h2 className="flex gap-2 justify-center items-center text-lg md:text-xl font-bold ">
-                {rev.name}, {rev.designation}
-              </h2>
-              <p className=" text-justify text-sm md:text-base">
-                {rev.description}
-              </p>
-            </div>
-          </SwiperSlide>
-        ))}
-        <NavigationButtons></NavigationButtons>
-      </Swiper>
-    </div>
+            </SwiperSlide>
+          ))}
+          <NavigationButtons />
+        </Swiper>
+      </Reveal>
+    </Section>
   );
 };
 

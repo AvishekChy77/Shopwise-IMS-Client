@@ -1,58 +1,49 @@
+import { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import useUserData from "../../../Hooks/useUserData";
+import { AuthContext } from "../../../Provider/AuthProvider";
 
-const Navs = () => {
+const Navs = ({ mobile = false }) => {
+  const { user } = useContext(AuthContext);
   const { userDB } = useUserData();
+  const cls = mobile
+    ? "nav-link block w-full rounded-lg px-3 py-2.5"
+    : "nav-link";
+  const role = userDB?.role;
+
   return (
     <>
-      <NavLink className="nav text-sm desktop:text-base pl-5 lg:pl-0" to="/">
+      <NavLink className={cls} to="/">
         Home
       </NavLink>
-      <NavLink
-        target="_blank"
-        className="nav text-sm desktop:text-base pl-5 lg:pl-0"
-        to="/watchDemo"
-      >
+      <NavLink className={cls} to="/watchDemo">
         Watch Demo
       </NavLink>
-      {userDB?.role !== "manager" && userDB?.role !== "admin" && (
-        <NavLink
-          className="nav text-sm desktop:text-base pl-5 lg:pl-0"
-          to="/createStore"
-        >
+      {role !== "manager" && role !== "admin" && (
+        <NavLink className={cls} to="/createStore">
           Create Store
         </NavLink>
       )}
-      {userDB?.role === "manager" && (
-        <NavLink
-          className="nav text-sm desktop:text-base pl-5 lg:pl-0"
-          to="/dashboard/productManagement"
-        >
-          DashBoard
+      {role === "manager" && (
+        <>
+          <NavLink className={cls} to="/dashboard/productManagement">
+            Dashboard
+          </NavLink>
+          <NavLink className={cls} to="/feedback">
+            Feedback
+          </NavLink>
+        </>
+      )}
+      {role === "admin" && (
+        <NavLink className={cls} to="/dashboard/manageShops">
+          Dashboard
         </NavLink>
       )}
-      {userDB?.role === "manager" && (
-        <NavLink
-          className="nav text-sm desktop:text-base pl-5 lg:pl-0"
-          to="/feedback"
-        >
-          Feedback
+      {!user?.email && (
+        <NavLink className={cls} to="/register">
+          Register
         </NavLink>
       )}
-      {userDB?.role === "admin" && (
-        <NavLink
-          className="nav text-sm desktop:text-base pl-5 lg:pl-0"
-          to="/dashboard/manageShops"
-        >
-          DashBoard
-        </NavLink>
-      )}
-      <NavLink
-        className="nav text-sm desktop:text-base pl-5 lg:pl-0"
-        to="/register"
-      >
-        Register
-      </NavLink>
     </>
   );
 };

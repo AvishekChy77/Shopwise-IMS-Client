@@ -4,6 +4,8 @@ import { GoTrash } from "react-icons/go";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
+import { PageTransition } from "../../../Components/Motion";
+import ProductThumb from "../../../Components/ProductThumb";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import useShopProductDB from "../../../Hooks/useShopProductDB";
 
@@ -11,131 +13,145 @@ const ProductManagement = () => {
   const axiosSecure = useAxiosSecure();
   const { shop, isShopLoading, products, isProductsLoading, refetch } =
     useShopProductDB();
-  const isLimitReached = shop?.limit === products?.length;
-  console.log(shop, products, isLimitReached);
 
   const handleDelete = (item) => {
-    console.log(item);
     Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
+      title: "Delete this product?",
+      text: `"${item.productName}" will be removed permanently.`,
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
+      confirmButtonColor: "#265073",
+      cancelButtonColor: "#ef4444",
+      confirmButtonText: "Yes, delete it",
     }).then((result) => {
-      console.log(result);
       if (result.isConfirmed) {
         axiosSecure.delete(`/products/${item._id}`).then((res) => {
-          console.log(res.data);
           if (res.data.deletedCount > 0) {
             refetch();
             Swal.fire({
               title: "Deleted!",
-              text: "Product has been deleted",
+              text: "Product has been removed.",
               icon: "success",
+              confirmButtonColor: "#265073",
             });
           }
         });
       }
     });
   };
-  if (isShopLoading) {
+
+  if (isShopLoading || isProductsLoading) {
     return (
-      <div className=" max-w-4xl mx-auto p-5 mt-5 text-center">
-        <span className="loading loading-spinner loading-lg"></span>
+      <div className="mx-auto max-w-4xl p-10 text-center">
+        <span className="loading loading-spinner loading-lg text-brand-700"></span>
       </div>
     );
   }
 
   return (
-    <>
+    <PageTransition>
       <Helmet>
         <title>ShopWise | Product Management</title>
       </Helmet>
-      <div className="space-y-5  p-10">
-        {products?.length === 0 ? (
-          <div className="flex flex-col items-center justify-center gap-10">
-            <h2 className="text-2xl sm:text-3xl font-semibold">
-              Add your first product today!
-            </h2>
-            <Link to="/dashboard/addProduct">
-              <IoMdAddCircleOutline
-                size={80}
-                color="grey"
-                className=" opacity-75 hover:opacity-100 cursor-pointer"
-              />
+
+      {products?.length === 0 ? (
+        <div className="surface mx-auto flex max-w-xl flex-col items-center gap-5 p-14 text-center">
+          <span className="text-6xl">📦</span>
+          <h2 className="font-display text-2xl font-bold text-brand-950">
+            Add your first product today!
+          </h2>
+          <p className="text-sm text-slate-500">
+            Your inventory is empty — once you add products they&apos;ll show up here.
+          </p>
+          <Link to="/dashboard/addProduct" className="btn-brand">
+            <IoMdAddCircleOutline size={22} /> Add a product
+          </Link>
+        </div>
+      ) : (
+        <div className="space-y-6">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <h1 className="font-display text-2xl font-bold text-brand-950">
+                Product management
+              </h1>
+              <p className="text-sm text-slate-400">
+                {products?.length} of {shop?.limit} product slots used
+              </p>
+            </div>
+            <Link to="/dashboard/addProduct" className="btn-brand !px-5 !py-2.5 text-sm">
+              <IoMdAddCircleOutline size={20} /> Add product
             </Link>
           </div>
-        ) : (
-          <div className="space-y-5">
-            <div className="flex justify-between items-center">
-              {isProductsLoading ? (
-                <div className="max-w-4xl mx-auto p-5 mt-5 text-center">
-                  <span className="loading loading-spinner loading-lg"></span>
-                </div>
-              ) : (
-                <h2 className="text-lg desktop:text-xl font-semibold">
-                  Total Products:{products?.length}
-                </h2>
-              )}
-            </div>
-            <div className="overflow-x-auto text-center">
-              <table className="table">
-                {/* head */}
-                <thead>
-                  <tr className="text-black">
-                    <th className="px-2">#</th>
-                    <th className="px-2">IMAGE</th>
-                    <th className="px-2">NAME</th>
-                    <th className="px-2">Quantity</th>
-                    <th className="px-2">Sold</th>
-                    <th className="px-2">Update</th>
-                    <th className="px-2">Delete</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {products?.map((item, idx) => (
-                    <tr key={item._id}>
-                      <td className="px-2">{idx}</td>
-                      <td className="px-2">
-                        <div className="flex items-center gap-3">
-                          <div className="">
-                            <div className="">
-                              <img
-                                className="bg-slate-200 border border-zinc-400 object-contain w-10 h-10 sm:w-12 sm:h-12 rounded-full"
-                                src={item.img}
-                                alt="Avatar Tailwind CSS Component"
-                              />
-                            </div>
-                          </div>
+
+          <div className="surface overflow-x-auto">
+            <table className="table">
+              <thead>
+                <tr className="border-b border-slate-200 text-xs uppercase tracking-wider text-slate-400">
+                  <th>#</th>
+                  <th>Product</th>
+                  <th>Quantity</th>
+                  <th>Sold</th>
+                  <th className="text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {products?.map((item, idx) => (
+                  <tr
+                    key={item._id}
+                    className="border-b border-slate-100 transition-colors last:border-0 hover:bg-brand-50/50"
+                  >
+                    <td className="text-slate-400">{idx + 1}</td>
+                    <td>
+                      <div className="flex items-center gap-3">
+                        <ProductThumb src={item.img} alt={item.productName} />
+                        <div>
+                          <p className="font-semibold text-brand-950">
+                            {item.productName}
+                          </p>
+                          <p className="text-xs text-slate-400">
+                            Tk {item.sellingPrice} · {item.discount}% off
+                          </p>
                         </div>
-                      </td>
-                      <td className="px-2">{item.productName}</td>
-                      <td>{item.quantity}</td>
-                      <td>{item.saleCount}</td>
-                      <td>
-                        <Link to={`/dashboard/updateProduct/${item._id}`}>
-                          <button>
-                            <CiEdit size={24} />
-                          </button>
+                      </div>
+                    </td>
+                    <td>
+                      <span
+                        className={`rounded-full px-3 py-1 text-xs font-bold ${
+                          item.quantity > 0
+                            ? "bg-leaf-400/20 text-leaf-700"
+                            : "bg-rose-100 text-rose-600"
+                        }`}
+                      >
+                        {item.quantity > 0 ? item.quantity : "Out of stock"}
+                      </span>
+                    </td>
+                    <td className="text-slate-500">{item.saleCount}</td>
+                    <td>
+                      <div className="flex justify-end gap-2">
+                        <Link
+                          to={`/dashboard/updateProduct/${item._id}`}
+                          aria-label="Edit product"
+                          className="grid size-9 place-items-center rounded-lg text-slate-500 transition hover:bg-brand-700/10 hover:text-brand-700"
+                        >
+                          <CiEdit size={22} />
                         </Link>
-                      </td>
-                      <td>
-                        <button onClick={() => handleDelete(item)}>
-                          <GoTrash className=" hover:text-red-500" size={24} />
+                        <button
+                          onClick={() => handleDelete(item)}
+                          aria-label="Delete product"
+                          className="grid size-9 place-items-center rounded-lg text-slate-500 transition hover:bg-rose-500/10 hover:text-rose-500"
+                        >
+                          <GoTrash size={18} />
                         </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-        )}
-      </div>
-    </>
+        </div>
+      )}
+    </PageTransition>
   );
 };
 

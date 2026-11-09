@@ -1,147 +1,142 @@
 import { useQuery } from "@tanstack/react-query";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import ReactApexChart from "react-apexcharts";
 import { Helmet } from "react-helmet-async";
+import { FaArrowTrendUp, FaSackDollar, FaWallet } from "react-icons/fa6";
+import { PageTransition } from "../../../Components/Motion";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import { AuthContext } from "../../../Provider/AuthProvider";
+
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 const PaymentHistory = () => {
   const { user } = useContext(AuthContext);
   const axiosSecure = useAxiosSecure();
-  const [saleschartData, setSalesChartData] = useState({
-    series: [
-      {
-        name: "Sales",
-        data: [],
-      },
-    ],
-    options: {
-      chart: {
-        height: 350,
-        type: "line",
-        zoom: {
-          enabled: false,
-        },
-      },
-      dataLabels: {
-        enabled: false,
-      },
-      stroke: {
-        curve: "straight",
-      },
-      title: {
-        text: "Sales count by Month",
-        align: "left",
-      },
-      grid: {
-        row: {
-          colors: ["transparent", "transparent"], // takes an array which will be repeated on columns
-          opacity: 0.5,
-        },
-      },
-      xaxis: {
-        categories: [
-          "Jan",
-          "Feb",
-          "Mar",
-          "Apr",
-          "May",
-          "Jun",
-          "Jul",
-          "Aug",
-          "Sep",
-        ],
-      },
-    },
-  });
 
   const { data: payments = [] } = useQuery({
     queryKey: ["payments", user.email],
     queryFn: async () => {
       const res = await axiosSecure.get(`/payments/${user.email}`);
-      const newSalesChartData = {
-        ...saleschartData,
-        series: [
-          { name: "Sales", data: [10, 41, 35, 51, 49, 62, 69, 91, 148] },
-        ],
-      };
-      setSalesChartData(newSalesChartData);
       return res.data;
     },
   });
-  console.log(payments);
-  console.log(saleschartData);
-  const totalInvest = payments?.reduce(
-    (total, item) => total + item.productlists.productionCost,
+
+  // monthly sale counts derived from the real payment records
+  const monthlyCounts = MONTHS.map(
+    (_, m) =>
+      payments.filter((p) => {
+        const d = new Date(p.date);
+        return !isNaN(d) && d.getMonth() === m;
+      }).length
+  );
+
+  const chart = {
+    series: [{ name: "Sales", data: monthlyCounts }],
+    options: {
+      chart: { type: "area", toolbar: { show: false }, zoom: { enabled: false } },
+      colors: ["#265073"],
+      dataLabels: { enabled: false },
+      stroke: { curve: "smooth", width: 3 },
+      fill: {
+        type: "gradient",
+        gradient: { opacityFrom: 0.35, opacityTo: 0.02 },
+      },
+      grid: { borderColor: "#e2e8f0", strokeDashArray: 4 },
+      xaxis: { categories: MONTHS, labels: { style: { colors: "#94a3b8" } } },
+      yaxis: { labels: { style: { colors: "#94a3b8" } } },
+    },
+  };
+
+  const totalInvest = payments.reduce(
+    (total, item) => total + (item.productlists?.productionCost || 0),
     0
   );
-  const totalSellingPrice = payments?.reduce(
-    (total, item) => total + item.productlists.sellingPrice,
+  const totalSellingPrice = payments.reduce(
+    (total, item) => total + (item.productlists?.sellingPrice || 0),
     0
   );
   const totalProfit = totalSellingPrice - totalInvest;
+
+  const stats = [
+    { label: "Total sales", value: payments.length, icon: <FaSackDollar /> },
+    { label: "Total invest", value: `Tk ${totalInvest}`, icon: <FaWallet /> },
+    { label: "Total profit", value: `Tk ${totalProfit}`, icon: <FaArrowTrendUp /> },
+  ];
+
   return (
-    <>
+    <PageTransition>
       <Helmet>
         <title>ShopWise | Sales Summary</title>
       </Helmet>
-      <div>
-        <div className=" p-4 my-5 max-w-3xl mx-auto  pb-10 lg:px-10">
-          <div className="grid mb-5 grid-cols-1 md:grid-cols-3 gap-5 align-middle">
-            {/* <div className="h-32 lg:h-40 rounded text-white text-lg font-medium flex items-center justify-center shadow-lg  bg-gradient-to-r from-[#ff3434] to-[#e09c9c]">
-              <div className="flex items-start justify-center flex-col-reverse pl-2">
-                <p>Total Sale</p>
-                <p>{payments?.length}</p>
-              </div>
-            </div> */}
-            <div className="h-32 lg:h-40 rounded">
-              <ReactApexChart
-                options={saleschartData.options}
-                series={saleschartData.series}
-                type="line"
-                height={200}
-              />
-            </div>
-            <div className="h-32 lg:h-40 rounded text-white text-lg font-medium flex items-center justify-center shadow-lg  bg-gradient-to-r from-green-500 to-green-200">
-              <div className="flex items-start justify-center flex-col-reverse pl-2">
-                <p>Total Invest</p>
-                <p>{totalInvest}</p>
-              </div>
-            </div>
-            <div className="h-32 lg:h-40 rounded text-white text-lg font-medium flex items-center justify-center shadow-lg  bg-gradient-to-r from-sky-500 to-sky-200">
-              <div className="flex items-start justify-center flex-col-reverse pl-2">
-                <p>Total Profit</p>
-                <p>{totalProfit}</p>
-              </div>
-            </div>
-          </div>
-          <div className="overflow-x-auto text-center">
-            <table className="table">
-              {/* head */}
-              <thead className=" bg-cyan-900 text-white ">
-                <tr>
-                  <th className="px-2">Name</th>
-                  <th className="px-2">Payment Date</th>
-                  <th className="px-2">Profit</th>
-                </tr>
-              </thead>
-              <tbody>
-                {payments.map((payment) => (
-                  <tr key={payment._id}>
-                    <td className="px-2">{payment.productlists.productName}</td>
-                    <td className="px-2">{payment.date}</td>
-                    <td className="px-2">
-                      {payment.productlists.sellingPrice -
-                        payment.productlists.productionCost}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+
+      <div className="mb-8">
+        <h1 className="font-display text-2xl font-bold text-brand-950">Sales summary</h1>
+        <p className="text-sm text-slate-400">Your shop&apos;s performance at a glance</p>
       </div>
-    </>
+
+      <div className="mb-6 grid gap-5 md:grid-cols-3">
+        {stats.map((s) => (
+          <div key={s.label} className="surface flex items-center gap-4 p-6">
+            <span className="grid size-12 place-items-center rounded-2xl bg-gradient-to-br from-brand-600 to-brand-900 text-lg text-white">
+              {s.icon}
+            </span>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                {s.label}
+              </p>
+              <p className="font-display text-2xl font-extrabold text-brand-950">
+                {s.value}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="surface mb-6 p-6">
+        <h3 className="font-display mb-2 font-bold text-brand-950">Sales by month</h3>
+        <ReactApexChart
+          options={chart.options}
+          series={chart.series}
+          type="area"
+          height={260}
+        />
+      </div>
+
+      <div className="surface overflow-x-auto">
+        <table className="table">
+          <thead>
+            <tr className="border-b border-slate-200 text-xs uppercase tracking-wider text-slate-400">
+              <th>Product</th>
+              <th>Payment date</th>
+              <th>Profit</th>
+            </tr>
+          </thead>
+          <tbody>
+            {payments.map((payment) => (
+              <tr
+                key={payment._id}
+                className="border-b border-slate-100 transition-colors last:border-0 hover:bg-brand-50/50"
+              >
+                <td className="font-semibold text-brand-950">
+                  {payment.productlists?.productName}
+                </td>
+                <td className="text-slate-500">{payment.date}</td>
+                <td className="font-semibold text-leaf-600">
+                  Tk{" "}
+                  {(payment.productlists?.sellingPrice || 0) -
+                    (payment.productlists?.productionCost || 0)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        {payments.length === 0 && (
+          <p className="p-8 text-center text-sm text-slate-400">
+            No completed sales yet — finished payments will appear here.
+          </p>
+        )}
+      </div>
+    </PageTransition>
   );
 };
 

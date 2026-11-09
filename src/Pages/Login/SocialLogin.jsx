@@ -14,28 +14,33 @@ const SocialLogin = () => {
   const handleSocialSignIn = (social) => {
     social()
       .then((res) => {
-        console.log(res.user);
         const userInfo = {
           email: res.user?.email,
           name: res.user?.displayName,
         };
-        axiosPublic.post("/users", userInfo).then((res) => {
-          console.log(res.data);
+        axiosPublic.post("/users", userInfo).then(() => {
           toast("Successfully logged in!");
           Navigate("/createStore");
         });
       })
-      .catch((error) => console.log(error));
+      .catch(() => toast.error("Google sign-in failed — please try again"));
   };
+
   return (
     <div className="w-full">
-      <div
-        onClick={() => handleSocialSignIn(googleLogIn)}
-        className="cursor-pointer bg-sky-200 flex rounded-md gap-5 justify-center items-center hover:bg-sky-500 text-lg "
-      >
-        <span className="py-2 font-semibold">Continue with</span>
-        <FcGoogle></FcGoogle>
+      <div className="my-4 flex items-center gap-3">
+        <span className="h-px flex-1 bg-slate-200" />
+        <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
+          or
+        </span>
+        <span className="h-px flex-1 bg-slate-200" />
       </div>
+      <button
+        onClick={() => handleSocialSignIn(googleLogIn)}
+        className="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-300 bg-white py-3 font-semibold text-slate-700 transition-all duration-300 hover:border-brand-500 hover:bg-brand-50 hover:shadow-soft"
+      >
+        <FcGoogle className="text-xl" /> Continue with Google
+      </button>
     </div>
   );
 };

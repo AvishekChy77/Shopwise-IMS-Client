@@ -1,31 +1,31 @@
-import { FiSearch } from "react-icons/fi";
 import { IoMdAddCircleOutline } from "react-icons/io";
-import useShopProductDB from "../../Hooks/useShopProductDB";
 import { Link } from "react-router-dom";
+import useShopProductDB from "../../Hooks/useShopProductDB";
+import Avatar from "../Avatar";
 
 const Topbar = () => {
   const { shop, isShopLoading } = useShopProductDB();
 
   return (
-    <div className="flex items-center p-4 justify-between bg-white">
-      <h2 className="text-lg xl:text-xl font-medium">Dashboard</h2>
-      <div className="relative">
-        <input
-          type="text"
-          placeholder="Search your product"
-          className="md:w-80 p-1.5 pl-10 bg-[#F9FAFB] border border-gray-300 rounded-full shadow-sm focus:outline-none focus:ring-1 focus:ring-slate-400"
-        />
-        <FiSearch className="absolute left-3 top-3 text-gray-500" />
+    <div className="sticky top-0 z-30 hidden items-center justify-between border-b border-slate-200 bg-white/90 px-8 py-4 backdrop-blur-lg lg:flex">
+      <h2 className="font-display text-xl font-bold text-brand-950">Dashboard</h2>
+      <div className="flex items-center gap-5">
+        <Link
+          to="/dashboard/addProduct"
+          className="flex items-center gap-2 rounded-xl bg-brand-700/10 px-4 py-2 text-sm font-semibold text-brand-700 transition hover:bg-brand-700 hover:text-white"
+        >
+          <IoMdAddCircleOutline size={20} /> Add product
+        </Link>
+        {!isShopLoading && shop?.shopName && (
+          <div className="flex items-center gap-2.5">
+            <Avatar src={shop?.shopLogo} name={shop?.shopName} className="size-10" />
+            <div className="leading-tight">
+              <p className="text-sm font-bold text-brand-950">{shop.shopName}</p>
+              <p className="text-xs text-slate-400">{shop.location}</p>
+            </div>
+          </div>
+        )}
       </div>
-      <Link to="/dashboard/addProduct"><IoMdAddCircleOutline size={30} /></Link>
-     {!isShopLoading && <div className="flex items-center gap-2">
-        <img
-          className="w-10 h-10 object-contain border rounded-full bg-slate-200"
-          src={shop?.shopLogo}
-          alt=""
-        />
-        <h4 className="text-lg font-medium">{shop.shopName}</h4>
-      </div>}
     </div>
   );
 };

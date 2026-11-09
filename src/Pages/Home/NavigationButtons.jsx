@@ -4,15 +4,17 @@ import { useSwiper } from "swiper/react";
 const NavigationButtons = () => {
   const swiper = useSwiper();
   return (
-    <div className="ml-5 mb-5 flex items-center gap-5">
+    <div className="mb-2 flex items-center justify-center gap-4">
       <button
-        className=" bottom-5 btn btn-sm btn-circle btn-outline"
+        aria-label="Previous review"
+        className="grid size-10 place-items-center rounded-full border border-slate-300 text-slate-500 transition-all duration-300 hover:border-brand-700 hover:bg-brand-700 hover:text-white"
         onClick={() => swiper.slidePrev()}
       >
         <FaArrowLeft />
       </button>
       <button
-        className=" bottom-5 btn btn-sm btn-circle btn-outline"
+        aria-label="Next review"
+        className="grid size-10 place-items-center rounded-full border border-slate-300 text-slate-500 transition-all duration-300 hover:border-brand-700 hover:bg-brand-700 hover:text-white"
         onClick={() => swiper.slideNext()}
       >
         <FaArrowRight />

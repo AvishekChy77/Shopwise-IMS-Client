@@ -19,6 +19,7 @@
     "axios": "^1.6.2",
     "firebase": "^10.12.3",
     "formik": "^2.4.5",
+    "framer-motion": "^14.11.0",
     "localforage": "^1.10.0",
     "lottie-react": "^2.4.0",
     "lottie-web": "^5.12.2",

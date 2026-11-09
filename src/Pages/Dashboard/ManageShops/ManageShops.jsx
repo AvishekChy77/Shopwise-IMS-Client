@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet-async";
 import { IoMail } from "react-icons/io5";
+import Avatar from "../../../Components/Avatar";
+import { PageTransition } from "../../../Components/Motion";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 
 const ManageShops = () => {
@@ -12,65 +14,77 @@ const ManageShops = () => {
       return res.data;
     },
   });
-  const handlebill = () => {
-    //
-  };
+
+  if (isPending) {
+    return (
+      <div className="mx-auto max-w-4xl p-10 text-center">
+        <span className="loading loading-spinner loading-lg text-brand-700"></span>
+      </div>
+    );
+  }
+
   return (
-    <>
+    <PageTransition>
       <Helmet>
         <title>ShopWise | Manage Shops</title>
       </Helmet>
-      <div className=" flex flex-col gap-5 items-center">
-        <h2 className=" text-xl md:text-3xl text-center font-semibold text-black">
-          Shops: {shops?.length}
-        </h2>
-        {isPending && (
-          <div className=" max-w-4xl mx-auto p-5 mt-5 text-center">
-            <span className="loading loading-spinner loading-lg"></span>
-          </div>
-        )}
-        <div className="overflow-x-auto w-full text-center">
-          <table className="table">
-            {/* head */}
-            <thead className=" bg-cyan-900 text-white ">
-              <tr>
-                <th className="px-2">Name</th>
-                <th className="px-2">Logo</th>
-                <th className="px-2">Product limit</th>
-                <th className="px-2">Description</th>
-                <th className="px-2">Notice</th>
-              </tr>
-            </thead>
-            <tbody>
-              {shops?.map((shop) => (
-                <tr key={shop._id}>
-                  <td className="px-2">{shop.shopName}</td>
-                  <td className="px-2">
-                    <div className="flex items-center gap-3">
-                      <div className="avatar">
-                        <div className="mask mask-squircle w-10 h-10">
-                          <img
-                            src={shop.shopLogo}
-                            alt="Avatar Tailwind CSS Component"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-2">{shop.limit}</td>
-                  <td className="px-2">{shop.shopDescription}</td>
-                  <td className="px-2">
-                    <button onClick={handlebill} className="">
-                      <IoMail className=" hover:text-blue-500" size={26} />{" "}
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+
+      <div className="mb-8">
+        <h1 className="font-display text-2xl font-bold text-brand-950">Manage shops</h1>
+        <p className="text-sm text-slate-400">
+          {shops?.length} shops registered on the platform
+        </p>
       </div>
-    </>
+
+      <div className="surface overflow-x-auto">
+        <table className="table">
+          <thead>
+            <tr className="border-b border-slate-200 text-xs uppercase tracking-wider text-slate-400">
+              <th>Shop</th>
+              <th>Category</th>
+              <th>Product limit</th>
+              <th>Manager</th>
+              <th className="text-right">Notice</th>
+            </tr>
+          </thead>
+          <tbody>
+            {shops?.map((shop) => (
+              <tr
+                key={shop._id}
+                className="border-b border-slate-100 transition-colors last:border-0 hover:bg-brand-50/50"
+              >
+                <td>
+                  <div className="flex items-center gap-3">
+                    <Avatar src={shop.shopLogo} name={shop.shopName} className="size-10" />
+                    <div>
+                      <p className="font-semibold text-brand-950">{shop.shopName}</p>
+                      <p className="text-xs text-slate-400">{shop.location}</p>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <span className="rounded-full bg-brand-700/10 px-3 py-1 text-xs font-bold text-brand-700">
+                    {shop.shopDescription}
+                  </span>
+                </td>
+                <td className="text-slate-600">{shop.limit}</td>
+                <td className="text-slate-600">{shop.manager || shop.email}</td>
+                <td>
+                  <div className="flex justify-end">
+                    <button
+                      aria-label="Send notice"
+                      className="grid size-9 place-items-center rounded-lg text-slate-500 transition hover:bg-brand-700/10 hover:text-brand-700"
+                    >
+                      <IoMail size={20} />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </PageTransition>
   );
 };
 
