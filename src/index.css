@@ -58,6 +58,11 @@
   }
 }
 
+/* brand marquee — suppress the stray scrollbar its container shows on Windows */
+.rfm-marquee-container {
+  overflow: hidden !important;
+}
+
 /* reviews slider pagination */
 .mySwiper .swiper-pagination-bullet {
   background: #94a3b8;
