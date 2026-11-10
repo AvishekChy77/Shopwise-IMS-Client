@@ -8,7 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Swal from "sweetalert2";
 import Avatar from "../../../Components/Avatar";
 import { PageTransition } from "../../../Components/Motion";
-import useAxiosSecure from "../../../Hooks/useAxiosSecure";
+import useAxiosSecure, { apiError } from "../../../Hooks/useAxiosSecure";
 import useShopProductDB from "../../../Hooks/useShopProductDB";
 import useUserData from "../../../Hooks/useUserData";
 import { fileToCompressedDataUrl } from "../../../utils/uploadImage";
@@ -82,7 +82,7 @@ const AddProduct = () => {
           resetForm();
         }
       } catch (error) {
-        toast.error(error.message || "Could not add the product");
+        toast.error(apiError(error, "Could not add the product"));
       } finally {
         setSubmitting(false);
       }

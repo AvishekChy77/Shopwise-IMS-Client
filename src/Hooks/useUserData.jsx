@@ -8,11 +8,10 @@ const useUserData = () => {
   const { user, loading } = useContext(AuthContext);
   const { data: userDB, refetch } = useQuery({
     queryKey: ["user", user?.email],
-    enabled: !loading,
+    enabled: !loading && !!user?.email,
     queryFn: async () => {
       const res = await axiosSecure.get(`/users/${user.email}`);
-      console.log(res.data);
-      return res.data;
+      return res.data || null;
     },
   });
   return { userDB, refetch };

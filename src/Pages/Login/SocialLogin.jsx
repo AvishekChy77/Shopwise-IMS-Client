@@ -13,15 +13,14 @@ const SocialLogin = () => {
 
   const handleSocialSignIn = (social) => {
     social()
-      .then((res) => {
+      .then(async (res) => {
         const userInfo = {
-          email: res.user?.email,
+          idToken: await res.user.getIdToken(),
           name: res.user?.displayName,
         };
-        axiosPublic.post("/users", userInfo).then(() => {
-          toast("Successfully logged in!");
-          Navigate("/createStore");
-        });
+        await axiosPublic.post("/users", userInfo);
+        toast("Successfully logged in!");
+        Navigate("/createStore");
       })
       .catch(() => toast.error("Google sign-in failed — please try again"));
   };

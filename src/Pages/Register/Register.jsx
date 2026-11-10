@@ -38,9 +38,11 @@ const Register = () => {
       await createUser(data.email, data.password);
       await updateProfile(auth.currentUser, { displayName: data.displayName });
 
+      // the server takes the email from this verified token, not from the form
+      const idToken = await auth.currentUser.getIdToken();
       const userInfo = {
+        idToken,
         name: data.displayName,
-        email: data.email,
         photo,
       };
       const res = await axiosPublic.post("/users", userInfo);

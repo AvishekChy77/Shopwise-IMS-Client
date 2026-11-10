@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Swal from "sweetalert2";
 import { PageTransition } from "../../../Components/Motion";
-import useAxiosSecure from "../../../Hooks/useAxiosSecure";
+import useAxiosSecure, { apiError } from "../../../Hooks/useAxiosSecure";
 import useShopProductDB from "../../../Hooks/useShopProductDB";
 import { fileToCompressedDataUrl } from "../../../utils/uploadImage";
 
@@ -73,7 +73,7 @@ const UpdateProduct = () => {
           toast("Nothing was different from the saved version.");
         }
       } catch (error) {
-        toast.error(error.message || "Could not update the product");
+        toast.error(apiError(error, "Could not update the product"));
       } finally {
         setSubmitting(false);
       }

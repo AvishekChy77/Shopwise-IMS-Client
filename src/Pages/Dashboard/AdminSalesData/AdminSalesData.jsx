@@ -1,7 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import ReactApexChart from "react-apexcharts";
 import { Helmet } from "react-helmet-async";
-import { FaBoxesStacked, FaMoneyBillTrendUp, FaSackDollar } from "react-icons/fa6";
+import {
+  FaCrown,
+  FaMoneyBillTrendUp,
+  FaSackDollar,
+  FaStore,
+} from "react-icons/fa6";
 import { IoMail } from "react-icons/io5";
 import { PageTransition } from "../../../Components/Motion";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
@@ -24,12 +29,11 @@ const AdminSalesData = () => {
     },
   });
 
-  const totalProducts = products?.reduce((total, item) => total + (item.quantity || 0), 0);
-  const totalSale = products?.reduce((total, item) => total + (item.saleCount || 0), 0);
-  const totalIncome = products?.reduce(
-    (total, item) => total + (item.saleCount || 0) * (item.sellingPrice || 0),
-    0
-  );
+  // platform totals are aggregated on the server from real payment records
+  const { data: overview } = useQuery({
+    queryKey: ["adminStats"],
+    queryFn: async () => (await axiosSecure.get("/stats/admin")).data,
+  });
 
   const topSellers = [...(products || [])]
     .sort((a, b) => (b.saleCount || 0) - (a.saleCount || 0))
@@ -56,9 +60,30 @@ const AdminSalesData = () => {
   };
 
   const stats = [
-    { label: "Total income", value: `Tk ${totalIncome ?? "—"}`, icon: <FaSackDollar /> },
-    { label: "Products in stock", value: totalProducts ?? "—", icon: <FaBoxesStacked /> },
-    { label: "Total sales", value: totalSale ?? "—", icon: <FaMoneyBillTrendUp /> },
+    {
+      label: "Sales revenue",
+      value: overview ? `Tk ${overview.sales.revenue}` : "—",
+      hint: overview ? `${overview.sales.orders} orders · ${overview.sales.unitsSold} units` : "",
+      icon: <FaSackDollar />,
+    },
+    {
+      label: "Subscriptions",
+      value: overview ? `$${overview.subscriptions.revenue}` : "—",
+      hint: overview ? `${overview.subscriptions.count} plans sold` : "",
+      icon: <FaCrown />,
+    },
+    {
+      label: "Shops",
+      value: overview?.shops ?? "—",
+      hint: overview ? `${overview.users} registered users` : "",
+      icon: <FaStore />,
+    },
+    {
+      label: "Products listed",
+      value: overview?.products ?? "—",
+      hint: overview ? `${overview.unitsInStock} units in stock` : "",
+      icon: <FaMoneyBillTrendUp />,
+    },
   ];
 
   return (
@@ -76,19 +101,20 @@ const AdminSalesData = () => {
         </p>
       </div>
 
-      <div className="mb-6 grid gap-5 md:grid-cols-3">
+      <div className="mb-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
         {stats.map((s) => (
           <div key={s.label} className="surface flex items-center gap-4 p-6">
-            <span className="grid size-12 place-items-center rounded-2xl bg-gradient-to-br from-brand-600 to-brand-900 text-lg text-white">
+            <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-brand-600 to-brand-900 text-lg text-white">
               {s.icon}
             </span>
-            <div>
+            <div className="min-w-0">
               <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
                 {s.label}
               </p>
               <p className="font-display text-2xl font-extrabold text-brand-950">
                 {s.value}
               </p>
+              {s.hint && <p className="truncate text-xs text-slate-400">{s.hint}</p>}
             </div>
           </div>
         ))}

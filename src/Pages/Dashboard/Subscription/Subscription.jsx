@@ -4,12 +4,14 @@ import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { FaCheck } from "react-icons/fa6";
 import { PageTransition } from "../../../Components/Motion";
-import CheckOut from "./Checkout";
+import CheckOut from "./CheckOut";
 
 const stripePromise = loadStripe(import.meta.env.VITE_PAYMENT_GATEWAY_PK);
 
+// ids match the server's plan table, which is the source of truth for price/limit
 const plans = [
   {
+    id: "standard",
     name: "Standard Pack",
     price: 10,
     limit: 200,
@@ -17,6 +19,7 @@ const plans = [
     featured: false,
   },
   {
+    id: "medium",
     name: "Medium Pack",
     price: 20,
     limit: 450,
@@ -24,6 +27,7 @@ const plans = [
     featured: true,
   },
   {
+    id: "heavy",
     name: "Heavy Pack",
     price: 50,
     limit: 1500,
@@ -33,12 +37,10 @@ const plans = [
 ];
 
 const Subscription = () => {
-  const [bill, setBill] = useState();
-  const [limit, setLimit] = useState();
-  const handleBill = (bill, limit) => {
-    setBill(bill);
-    setLimit(limit);
-  };
+  const [selectedId, setSelectedId] = useState();
+  const selected = plans.find((p) => p.id === selectedId);
+  const bill = selected?.price;
+  const limit = selected?.limit;
 
   return (
     <PageTransition>
@@ -57,13 +59,13 @@ const Subscription = () => {
 
       <div className="mb-10 grid gap-6 md:grid-cols-3">
         {plans.map((plan) => {
-          const selected = bill === plan.price;
+          const isSelected = selectedId === plan.id;
           return (
             <div
               key={plan.name}
               className={`surface relative flex flex-col p-7 transition-all duration-300 ${
                 plan.featured ? "border-brand-500 shadow-lift" : ""
-              } ${selected ? "ring-2 ring-brand-600" : ""}`}
+              } ${isSelected ? "ring-2 ring-brand-600" : ""}`}
             >
               {plan.featured && (
                 <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-brand-600 to-brand-800 px-4 py-1 text-[10px] font-bold uppercase tracking-wide text-white">
@@ -83,12 +85,12 @@ const Subscription = () => {
                 ))}
               </ul>
               <button
-                onClick={() => handleBill(plan.price, plan.limit)}
+                onClick={() => setSelectedId(plan.id)}
                 className={`mt-6 w-full ${
                   plan.featured ? "btn-brand" : "btn-ghost-brand"
                 } !py-2.5 text-sm`}
               >
-                {selected ? "Selected ✓" : "Purchase"}
+                {isSelected ? "Selected ✓" : "Purchase"}
               </button>
             </div>
           );
@@ -101,10 +103,10 @@ const Subscription = () => {
             Complete your payment
           </h3>
           <p className="mb-6 text-sm text-slate-400">
-            ${bill} — raises your product limit to {limit}
+            {selected.name} · ${bill} — adds {limit} product slots to your shop
           </p>
           <Elements stripe={stripePromise}>
-            <CheckOut bill={bill} limit={limit} />
+            <CheckOut plan={selectedId} bill={bill} />
           </Elements>
         </div>
       )}

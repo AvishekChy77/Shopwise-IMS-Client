@@ -2,7 +2,7 @@ import {
   GoogleAuthProvider,
   createUserWithEmailAndPassword,
   getAuth,
-  onAuthStateChanged,
+  onIdTokenChanged,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
@@ -40,26 +40,27 @@ const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    // also fires when Firebase refreshes the ID token (~hourly), which renews
+    // the API session before it expires
+    const unsubscribe = onIdTokenChanged(auth, async (currentUser) => {
       setUser(currentUser);
-      if (currentUser) {
-        // get token and store client
-        const userInfo = { email: currentUser.email };
-        axiosPublic.post("/jwt", userInfo).then((res) => {
-          if (res.data.token) {
-            localStorage.setItem("access-token", res.data.token);
-            setLoading(false);
-          }
-        });
-      } else {
-        //
+      if (!currentUser) {
         localStorage.removeItem("access-token");
+        setLoading(false);
+        return;
+      }
+      try {
+        // the server verifies this Firebase ID token before issuing its own
+        const idToken = await currentUser.getIdToken();
+        const res = await axiosPublic.post("/jwt", { idToken });
+        if (res.data?.token) localStorage.setItem("access-token", res.data.token);
+      } catch {
+        localStorage.removeItem("access-token");
+      } finally {
         setLoading(false);
       }
     });
-    return () => {
-      return unsubscribe();
-    };
+    return () => unsubscribe();
   }, [axiosPublic]);
 
   const authInfo = {

@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import Avatar from "../../../Components/Avatar";
 import { PageTransition } from "../../../Components/Motion";
-import useAxiosSecure from "../../../Hooks/useAxiosSecure";
+import useAxiosSecure, { apiError } from "../../../Hooks/useAxiosSecure";
 import useShopProductDB from "../../../Hooks/useShopProductDB";
 import ProductCard from "./ProductCard";
 
@@ -26,28 +26,30 @@ const SalesCollection = () => {
       )
     : products;
 
+  // the server fills in price and details from the product record
   const handleCart = (item) => {
-    const cartitem = {
-      productId: item._id,
-      img: item.img,
-      discount: item.discount,
-      productName: item.productName,
-      price: item.sellingPrice,
-      shopName: shop.shopName,
-      email: shop.email,
-    };
-    axiosSecure.post("/carts", cartitem).then((res) => {
-      if (res.data.insertedId) {
+    axiosSecure
+      .post("/carts", { productId: item._id })
+      .then((res) => {
+        if (res.data.insertedId) {
+          Swal.fire({
+            title: "Item added to cart!",
+            icon: "success",
+            confirmButtonColor: "#265073",
+            timer: 1400,
+            showConfirmButton: false,
+          });
+          refetch();
+        }
+      })
+      .catch((error) =>
         Swal.fire({
-          title: "Item added to cart!",
-          icon: "success",
+          title: "Can't add this item",
+          text: apiError(error),
+          icon: "warning",
           confirmButtonColor: "#265073",
-          timer: 1400,
-          showConfirmButton: false,
-        });
-        refetch();
-      }
-    });
+        })
+      );
   };
 
   if (isShopLoading || isProductsLoading) {

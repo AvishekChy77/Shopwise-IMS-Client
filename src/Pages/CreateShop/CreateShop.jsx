@@ -6,7 +6,7 @@ import { BiShoppingBag } from "react-icons/bi";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { PageTransition } from "../../Components/Motion";
-import useAxiosSecure from "../../Hooks/useAxiosSecure";
+import useAxiosSecure, { apiError } from "../../Hooks/useAxiosSecure";
 import useUserData from "../../Hooks/useUserData";
 import { AuthContext } from "../../Provider/AuthProvider";
 import shop from "../../assets/shop.json";
@@ -57,34 +57,25 @@ const CreateShop = () => {
           shopDescription: values.shopDescription,
           location: values.location,
           shopLogo,
-          limit: 3,
           manager: user.displayName,
-          email: user.email,
         };
+        // the server creates the shop and promotes this account to manager
         const shopRes = await axiosSecure.post("/shops", shopData);
         if (shopRes.data.insertedId) {
-          const userData = {
-            shopId: shopRes.data.insertedId,
-            shopLogo,
-            shop: values.shopName,
-          };
-          const userRes = await axiosSecure.patch(`users/manager/${user.email}`, userData);
-          if (userRes.data.modifiedCount > 0) {
-            Swal.fire({
-              title: `${values.shopName} is now part of ShopWise!`,
-              text: "Your dashboard is ready — let's add your first product.",
-              icon: "success",
-              confirmButtonColor: "#265073",
-            });
-            navigate("/");
-            refetch();
-          }
+          Swal.fire({
+            title: `${values.shopName} is now part of ShopWise!`,
+            text: "Your dashboard is ready — let's add your first product.",
+            icon: "success",
+            confirmButtonColor: "#265073",
+          });
           resetForm();
+          refetch();
+          navigate("/");
         }
       } catch (error) {
         Swal.fire({
           title: "Could not create the shop",
-          text: error?.response?.data?.message || error.message,
+          text: apiError(error),
           icon: "error",
           confirmButtonColor: "#265073",
         });

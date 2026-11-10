@@ -1,5 +1,7 @@
+import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet-async";
 import { CiEdit } from "react-icons/ci";
+import { FaTriangleExclamation } from "react-icons/fa6";
 import { GoTrash } from "react-icons/go";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import { Link } from "react-router-dom";
@@ -13,6 +15,13 @@ const ProductManagement = () => {
   const axiosSecure = useAxiosSecure();
   const { shop, isShopLoading, products, isProductsLoading, refetch } =
     useShopProductDB();
+
+  // inventory and sales summary computed on the server
+  const { data: stats, refetch: refetchStats } = useQuery({
+    queryKey: ["managerStats", shop?.email],
+    enabled: !!shop,
+    queryFn: async () => (await axiosSecure.get("/stats/manager")).data,
+  });
 
   const handleDelete = (item) => {
     Swal.fire({
@@ -28,6 +37,7 @@ const ProductManagement = () => {
         axiosSecure.delete(`/products/${item._id}`).then((res) => {
           if (res.data.deletedCount > 0) {
             refetch();
+            refetchStats();
             Swal.fire({
               title: "Deleted!",
               text: "Product has been removed.",
@@ -82,6 +92,39 @@ const ProductManagement = () => {
               <IoMdAddCircleOutline size={20} /> Add product
             </Link>
           </div>
+
+          {stats && (
+            <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+              {[
+                { label: "Units in stock", value: stats.inventory.unitsInStock },
+                { label: "Stock value", value: `Tk ${stats.inventory.stockValue}` },
+                { label: "Units sold", value: stats.sales.unitsSold },
+                { label: "Profit", value: `Tk ${stats.sales.profit}` },
+              ].map((s) => (
+                <div key={s.label} className="surface p-5">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                    {s.label}
+                  </p>
+                  <p className="font-display mt-1 text-xl font-extrabold text-brand-950">
+                    {s.value}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {stats?.inventory.lowStock.length > 0 && (
+            <div className="flex items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-800">
+              <FaTriangleExclamation className="mt-0.5 shrink-0" />
+              <p>
+                <span className="font-bold">Low stock:</span>{" "}
+                {stats.inventory.lowStock
+                  .map((p) => `${p.productName} (${p.quantity})`)
+                  .join(", ")}{" "}
+                — {stats.inventory.lowStockThreshold} units or fewer left.
+              </p>
+            </div>
+          )}
 
           <div className="surface overflow-x-auto">
             <table className="table">

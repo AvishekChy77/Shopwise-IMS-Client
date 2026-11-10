@@ -7,41 +7,36 @@ const axiosSecure = axios.create({
   baseURL: "https://shopwise-server.vercel.app",
 });
 
+// Interceptors are registered once; the hook only refreshes these handlers.
+// (Registering inside the hook stacked a new pair on every render.)
+let handlers = { logOut: null, navigate: null };
+
+axiosSecure.interceptors.request.use((config) => {
+  const token = localStorage.getItem("access-token");
+  if (token) config.headers.authorization = `Bearer ${token}`;
+  return config;
+});
+
+axiosSecure.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const status = error.response?.status;
+    if ((status === 401 || status === 403) && handlers.logOut) {
+      await handlers.logOut();
+      handlers.navigate?.("/login");
+    }
+    return Promise.reject(error);
+  }
+);
+
+// Server error messages are user-facing ("Product limit reached", ...)
+export const apiError = (error, fallback = "Something went wrong") =>
+  error?.response?.data?.message || error?.message || fallback;
+
 const useAxiosSecure = () => {
   const navigate = useNavigate();
   const { logOut } = useContext(AuthContext);
-  axiosSecure.interceptors.request.use(
-    function (config) {
-      const token = localStorage.getItem("access-token");
-      // console.log(`request stopped by  interceptor`, token);
-      config.headers.authorization = `Bearer ${token}`;
-      return config;
-    },
-    function (error) {
-      // Do something with request error
-      return Promise.reject(error);
-    }
-  );
-
-  // intercepts 401, 403 status
-  axiosSecure.interceptors.response.use(
-    function (response) {
-      // Any status code that lie within the range of 2xx cause this function to trigger
-      // Do something with response data
-      return response;
-    },
-    async (error) => {
-      // Any status codes that falls outside the range of 2xx cause this function to trigger
-      // Do something with response error
-      const status = error.response.status;
-      // console.log("error status in the interceptor", status);
-      if (status === 401 || status === 403) {
-        await logOut();
-        navigate("/login");
-      }
-      return Promise.reject(error);
-    }
-  );
+  handlers = { logOut, navigate };
   return axiosSecure;
 };
 
